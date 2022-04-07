@@ -2,6 +2,8 @@ package cz.upce.fei.sem_pr_backend.entity;
 
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -19,10 +21,10 @@ import java.util.Set;
 public class ApplicationUser {
     @Id
     @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @ManyToMany(mappedBy = "id", fetch = FetchType.EAGER)
+    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
     private Set<Role> roles;
 
     @NotNull
@@ -39,10 +41,29 @@ public class ApplicationUser {
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")
     private String password;
 
+    @OneToMany(mappedBy = "author", targetEntity = Issue.class)
+    @ToString.Exclude
+    private Set<Issue> issues;
+
+    @OneToMany(mappedBy = "author", targetEntity = Comment.class)
+    @ToString.Exclude
+    private Set<Comment> comments;
+
+    @OneToOne(mappedBy = "user", targetEntity = Profile.class)
+    private Profile profile;
+
+    @Enumerated(EnumType.STRING)
+    @NotNull
     @Column
+    private UserState state;
+
+    @Column
+    @CreationTimestamp
+    @NotNull
     private Timestamp created;
 
     @Column
+    @UpdateTimestamp
     private Timestamp lastEdited;
 
     @Override

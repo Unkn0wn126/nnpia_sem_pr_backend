@@ -2,8 +2,11 @@ package cz.upce.fei.sem_pr_backend.entity;
 
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -16,19 +19,25 @@ import java.util.Objects;
 public class Profile {
     @Id
     @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @NotNull
     private String nickname;
 
+    @Column(unique = true)
     private String profilePicturePath;
 
+    @NotNull
+    @CreationTimestamp
     private Timestamp created;
 
+    @NotNull
+    @UpdateTimestamp
     private Timestamp lastEdited;
 
-    @OneToOne(optional = false, mappedBy = "id")
-    private ApplicationUser userId;
+    @OneToOne(optional = false, targetEntity = ApplicationUser.class)
+    private ApplicationUser user;
 
     @Override
     public boolean equals(Object o) {

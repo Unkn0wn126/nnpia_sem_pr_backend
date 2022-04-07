@@ -2,8 +2,11 @@ package cz.upce.fei.sem_pr_backend.entity;
 
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
@@ -15,17 +18,23 @@ import java.util.Objects;
 public class Comment {
     @Id
     @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
     @Column(length = 300)
     private String content;
 
     @ManyToOne(optional = false)
-    private Issue issueId;
+    @JoinColumn(name = "issue_id", referencedColumnName = "id")
+    private Issue issue;
 
     @ManyToOne(optional = false)
-    private ApplicationUser authorId;
+    @JoinColumn(name = "author_id", referencedColumnName = "id")
+    private ApplicationUser author;
+
+    @NotNull
+    @CreationTimestamp
+    private Timestamp created;
 
     @Override
     public boolean equals(Object o) {
