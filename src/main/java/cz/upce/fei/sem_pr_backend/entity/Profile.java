@@ -22,21 +22,23 @@ public class Profile {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @Column(nullable = false)
     @NotNull
     private String nickname;
 
     @Column(unique = true)
     private String profilePicturePath;
 
-    @NotNull
+    @Column(nullable = false)
     @CreationTimestamp
     private Timestamp created;
 
-    @NotNull
     @UpdateTimestamp
     private Timestamp lastEdited;
 
+    @NotNull
     @OneToOne(optional = false, targetEntity = ApplicationUser.class)
+    @JoinColumn(nullable = false, unique = true)
     private ApplicationUser user;
 
     @Override

@@ -1,11 +1,14 @@
 package cz.upce.fei.sem_pr_backend.entity;
 
+import cz.upce.fei.sem_pr_backend.entity.enum_type.UserState;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.sql.Timestamp;
@@ -24,45 +27,44 @@ public class ApplicationUser {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER)
-    private Set<Role> roles;
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "users", cascade = CascadeType.REMOVE)
+    private Set<Role> roles = new java.util.LinkedHashSet<>();
 
+    @NotEmpty
     @NotNull
-    @Column(length = 45, unique = true)
+    @Column(length = 45, unique = true, nullable = false)
     private String username;
 
+    @Email
     @NotNull
-    @Pattern(regexp = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$")
-    @Column(length = 45, unique = true)
+    @Column(length = 45, unique = true, nullable = false)
     private String email;
 
-    @Column
+    @Column(nullable = false)
     @NotNull
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")
     private String password;
 
-    @OneToMany(mappedBy = "author", targetEntity = Issue.class)
+    @OneToMany(mappedBy = "author", orphanRemoval = true)
     @ToString.Exclude
-    private Set<Issue> issues;
+    private Set<Issue> issues = new java.util.LinkedHashSet<>();
 
-    @OneToMany(mappedBy = "author", targetEntity = Comment.class)
+    @OneToMany(mappedBy = "author", orphanRemoval = true)
     @ToString.Exclude
-    private Set<Comment> comments;
+    private Set<Comment> comments = new java.util.LinkedHashSet<>();
 
-    @OneToOne(mappedBy = "user", targetEntity = Profile.class)
+    @OneToOne(mappedBy = "user", targetEntity = Profile.class, orphanRemoval = true)
     private Profile profile;
 
     @Enumerated(EnumType.STRING)
     @NotNull
-    @Column
+    @Column(nullable = false)
     private UserState state;
 
-    @Column
+    @Column(nullable = false)
     @CreationTimestamp
-    @NotNull
     private Timestamp created;
 
-    @Column
     @UpdateTimestamp
     private Timestamp lastEdited;
 

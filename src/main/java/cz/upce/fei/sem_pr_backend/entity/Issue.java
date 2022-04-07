@@ -1,14 +1,21 @@
 package cz.upce.fei.sem_pr_backend.entity;
 
-import lombok.*;
+import cz.upce.fei.sem_pr_backend.entity.enum_type.IssueCompletionState;
+import cz.upce.fei.sem_pr_backend.entity.enum_type.IssueSeverity;
+import cz.upce.fei.sem_pr_backend.entity.enum_type.IssueVisibility;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
 
@@ -28,37 +35,40 @@ public class Issue {
 
     private String content;
 
+    @Column(nullable = false)
     @CreationTimestamp
-    @NotNull
     private Timestamp published;
 
     @UpdateTimestamp
     private Timestamp lastEdited;
 
-    @Enumerated(EnumType.STRING)
     @NotNull
-    @Column
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private IssueSeverity severity;
 
-    @Enumerated(EnumType.STRING)
     @NotNull
-    @Column
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private IssueVisibility visibility;
 
-    private LocalDateTime dueDate;
+    @Future(message = "Can't set goals for the past")
+    @Temporal(TemporalType.DATE)
+    private Date dueDate;
 
     @Enumerated(EnumType.STRING)
     @NotNull
-    @Column
+    @Column(nullable = false)
     private IssueCompletionState completionState;
 
+    @NotNull
     @ManyToOne(optional = false)
-    @JoinColumn(name = "author_id", referencedColumnName = "id")
+    @JoinColumn(name = "author_id", nullable = false, referencedColumnName = "id")
     private ApplicationUser author;
 
-    @OneToMany(mappedBy = "issue", targetEntity = Comment.class)
+    @OneToMany(mappedBy = "issue", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @ToString.Exclude
-    private Set<Comment> comments;
+    private Set<Comment> comments = new java.util.LinkedHashSet<>();
 
     @Override
     public boolean equals(Object o) {

@@ -3,6 +3,7 @@ package cz.upce.fei.sem_pr_backend.entity;
 import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -32,9 +33,11 @@ public class Comment {
     @JoinColumn(name = "author_id", referencedColumnName = "id")
     private ApplicationUser author;
 
-    @NotNull
     @CreationTimestamp
     private Timestamp created;
+
+    @UpdateTimestamp
+    private Timestamp lastEdited;
 
     @Override
     public boolean equals(Object o) {
