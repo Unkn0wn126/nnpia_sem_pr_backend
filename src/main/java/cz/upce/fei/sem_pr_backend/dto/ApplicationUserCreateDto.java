@@ -9,7 +9,7 @@ import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 
 @Data
-public class ApplicationUserRegisterDto implements Serializable {
+public class ApplicationUserCreateDto implements Serializable {
     @NotEmpty
     @NotNull
     private final String username;

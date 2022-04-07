@@ -1,10 +1,9 @@
 package cz.upce.fei.sem_pr_backend.controller;
 
-import cz.upce.fei.sem_pr_backend.dto.ApplicationUserRegisterDto;
+import cz.upce.fei.sem_pr_backend.dto.ApplicationUserCreateDto;
 import cz.upce.fei.sem_pr_backend.entity.ApplicationUser;
 import cz.upce.fei.sem_pr_backend.entity.enum_type.UserState;
 import cz.upce.fei.sem_pr_backend.repository.ApplicationUserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +20,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public void register(@RequestBody ApplicationUserRegisterDto userRegisterDto){
+    public void register(@RequestBody ApplicationUserCreateDto userRegisterDto){
         ApplicationUser user = new ApplicationUser();
         user.setState(UserState.ACTIVE);
         user.setUsername(userRegisterDto.getUsername());
