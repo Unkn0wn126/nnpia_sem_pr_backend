@@ -1,12 +1,13 @@
 package cz.upce.fei.sem_pr_backend.domain;
 
 import cz.upce.fei.sem_pr_backend.domain.enum_type.UserState;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -14,7 +15,6 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.sql.Timestamp;
-import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 
@@ -24,7 +24,7 @@ import java.util.Set;
 @ToString
 @RequiredArgsConstructor
 @Table(name = "users")
-public class ApplicationUser implements UserDetails {
+public class ApplicationUser{
     @Id
     @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -82,30 +82,5 @@ public class ApplicationUser implements UserDetails {
     @Override
     public int hashCode() {
         return getClass().hashCode();
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
     }
 }
