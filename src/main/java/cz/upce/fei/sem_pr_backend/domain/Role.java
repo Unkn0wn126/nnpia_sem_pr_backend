@@ -1,6 +1,6 @@
-package cz.upce.fei.sem_pr_backend.entity;
+package cz.upce.fei.sem_pr_backend.domain;
 
-import cz.upce.fei.sem_pr_backend.entity.enum_type.RoleType;
+import cz.upce.fei.sem_pr_backend.domain.enum_type.RoleType;
 import lombok.*;
 import org.hibernate.Hibernate;
 

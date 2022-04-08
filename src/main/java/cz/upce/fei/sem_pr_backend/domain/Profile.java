@@ -1,4 +1,4 @@
-package cz.upce.fei.sem_pr_backend.entity;
+package cz.upce.fei.sem_pr_backend.domain;
 
 import lombok.*;
 import org.hibernate.Hibernate;

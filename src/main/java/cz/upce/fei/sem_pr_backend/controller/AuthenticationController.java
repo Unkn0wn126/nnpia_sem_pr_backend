@@ -1,8 +1,8 @@
 package cz.upce.fei.sem_pr_backend.controller;
 
 import cz.upce.fei.sem_pr_backend.dto.ApplicationUserCreateDto;
-import cz.upce.fei.sem_pr_backend.entity.ApplicationUser;
-import cz.upce.fei.sem_pr_backend.entity.enum_type.UserState;
+import cz.upce.fei.sem_pr_backend.domain.ApplicationUser;
+import cz.upce.fei.sem_pr_backend.domain.enum_type.UserState;
 import cz.upce.fei.sem_pr_backend.repository.ApplicationUserRepository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,5 +27,15 @@ public class AuthenticationController {
         user.setPassword(userRegisterDto.getPassword());
         user.setEmail(userRegisterDto.getEmail());
         userRepository.save(user);
+    }
+
+    @PostMapping("/login")
+    public void login(){
+
+    }
+
+    @PostMapping("/logout")
+    public void logout(){
+
     }
 }

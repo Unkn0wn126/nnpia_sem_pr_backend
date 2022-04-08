@@ -1,4 +1,4 @@
-package cz.upce.fei.sem_pr_backend.integration_test;
+package cz.upce.fei.sem_pr_backend.controller;
 
 import cz.upce.fei.sem_pr_backend.repository.ApplicationUserRepository;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package cz.upce.fei.sem_pr_backend.entity;
+package cz.upce.fei.sem_pr_backend.domain;
 
 import lombok.*;
 import org.hibernate.Hibernate;
@@ -6,7 +6,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
 import java.util.Objects;
 

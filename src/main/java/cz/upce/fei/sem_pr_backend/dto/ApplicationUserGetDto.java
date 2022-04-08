@@ -1,9 +1,6 @@
 package cz.upce.fei.sem_pr_backend.dto;
 
-import cz.upce.fei.sem_pr_backend.dto.IssueGetDto;
-import cz.upce.fei.sem_pr_backend.dto.ProfileGetDto;
-import cz.upce.fei.sem_pr_backend.dto.RoleGetDto;
-import cz.upce.fei.sem_pr_backend.entity.enum_type.UserState;
+import cz.upce.fei.sem_pr_backend.domain.enum_type.UserState;
 import lombok.Data;
 
 import javax.validation.constraints.Email;

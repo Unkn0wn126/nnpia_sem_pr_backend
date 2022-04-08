@@ -1,8 +1,8 @@
-package cz.upce.fei.sem_pr_backend.entity;
+package cz.upce.fei.sem_pr_backend.domain;
 
-import cz.upce.fei.sem_pr_backend.entity.enum_type.IssueCompletionState;
-import cz.upce.fei.sem_pr_backend.entity.enum_type.IssueSeverity;
-import cz.upce.fei.sem_pr_backend.entity.enum_type.IssueVisibility;
+import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueCompletionState;
+import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueSeverity;
+import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueVisibility;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
