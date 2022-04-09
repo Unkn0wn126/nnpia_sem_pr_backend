@@ -2,8 +2,7 @@ package cz.upce.fei.sem_pr_backend.repository;
 
 import cz.upce.fei.sem_pr_backend.domain.ApplicationUser;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.UserState;
-import cz.upce.fei.sem_pr_backend.dto.ApplicationUserCreateDto;
-import cz.upce.fei.sem_pr_backend.repository.ApplicationUserRepository;
+import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserCreateDto;
 import cz.upce.fei.sem_pr_backend.service.ApplicationUserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

@@ -1,6 +1,7 @@
-package cz.upce.fei.sem_pr_backend.dto;
+package cz.upce.fei.sem_pr_backend.dto.applicationuser;
 
 import cz.upce.fei.sem_pr_backend.domain.enum_type.UserState;
+import cz.upce.fei.sem_pr_backend.dto.profile.ProfileGetDto;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -8,12 +9,10 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Set;
 
 @Data
 public class ApplicationUserGetDto implements Serializable {
     private final Long id;
-    private final Set<RoleGetDto> roles;
     @NotEmpty
     @NotNull
     private final String username;

@@ -1,4 +1,4 @@
-package cz.upce.fei.sem_pr_backend.dto;
+package cz.upce.fei.sem_pr_backend.dto.role;
 
 import cz.upce.fei.sem_pr_backend.domain.enum_type.RoleType;
 import lombok.Data;

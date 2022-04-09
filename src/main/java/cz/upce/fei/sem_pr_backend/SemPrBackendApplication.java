@@ -1,11 +1,14 @@
 package cz.upce.fei.sem_pr_backend;
 
-import cz.upce.fei.sem_pr_backend.domain.ApplicationUser;
 import cz.upce.fei.sem_pr_backend.domain.Role;
+import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueSeverity;
+import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueVisibility;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.RoleType;
-import cz.upce.fei.sem_pr_backend.dto.ApplicationUserCreateDto;
-import cz.upce.fei.sem_pr_backend.dto.ProfileCreateDto;
+import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserCreateDto;
+import cz.upce.fei.sem_pr_backend.dto.issue.IssueCreateDto;
+import cz.upce.fei.sem_pr_backend.dto.profile.ProfileCreateDto;
 import cz.upce.fei.sem_pr_backend.service.ApplicationUserService;
+import cz.upce.fei.sem_pr_backend.service.IssueService;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -34,7 +37,7 @@ public class SemPrBackendApplication {
     }
 
     @Bean
-    CommandLineRunner run(ApplicationUserService userService){
+    CommandLineRunner run(ApplicationUserService userService, IssueService issueService){
         return args -> {
             userService.saveRole(new Role(null, RoleType.ROLE_ADMIN, new HashSet<>()));
             userService.saveRole(new Role(null, RoleType.ROLE_USER, new HashSet<>()));
@@ -44,6 +47,9 @@ public class SemPrBackendApplication {
 
             userService.addRoleToUser("admin", RoleType.ROLE_ADMIN);
             userService.addRoleToUser("rando", RoleType.ROLE_USER);
+
+            issueService.createIssue("admin", new IssueCreateDto("It's not fucking working", "Title", IssueSeverity.LOW, IssueVisibility.PUBLIC, null));
+            issueService.createIssue("rando", new IssueCreateDto("It's still not fucking working", "Title...", IssueSeverity.LOW, IssueVisibility.PUBLIC, null));
         };
     }
 }

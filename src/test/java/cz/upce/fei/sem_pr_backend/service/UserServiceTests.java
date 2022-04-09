@@ -2,8 +2,8 @@ package cz.upce.fei.sem_pr_backend.service;
 
 import cz.upce.fei.sem_pr_backend.domain.ApplicationUser;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.UserState;
-import cz.upce.fei.sem_pr_backend.dto.ApplicationUserCreateDto;
-import cz.upce.fei.sem_pr_backend.dto.ProfileCreateDto;
+import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserCreateDto;
+import cz.upce.fei.sem_pr_backend.dto.profile.ProfileCreateDto;
 import cz.upce.fei.sem_pr_backend.repository.ApplicationUserRepository;
 import cz.upce.fei.sem_pr_backend.repository.ProfileRepository;
 import cz.upce.fei.sem_pr_backend.repository.RoleRepository;

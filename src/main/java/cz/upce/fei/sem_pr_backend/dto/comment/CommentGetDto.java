@@ -1,4 +1,4 @@
-package cz.upce.fei.sem_pr_backend.dto;
+package cz.upce.fei.sem_pr_backend.dto.comment;
 
 import lombok.Data;
 

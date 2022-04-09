@@ -26,7 +26,7 @@ import java.util.Set;
 public class Issue {
     @Id
     @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     private String header;
@@ -40,12 +40,10 @@ public class Issue {
     @UpdateTimestamp
     private Timestamp lastEdited;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private IssueSeverity severity;
 
-    @NotNull
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private IssueVisibility visibility;
@@ -55,12 +53,10 @@ public class Issue {
     private Date dueDate;
 
     @Enumerated(EnumType.STRING)
-    @NotNull
     @Column(nullable = false)
     private IssueCompletionState completionState;
 
-    @NotNull
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false, fetch = FetchType.EAGER)
     @JoinColumn(name = "author_id", nullable = false, referencedColumnName = "id")
     private ApplicationUser author;
 

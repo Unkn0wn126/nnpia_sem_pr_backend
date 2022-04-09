@@ -1,5 +1,6 @@
-package cz.upce.fei.sem_pr_backend.dto;
+package cz.upce.fei.sem_pr_backend.dto.applicationuser;
 
+import cz.upce.fei.sem_pr_backend.dto.profile.ProfileUpdateDto;
 import lombok.Data;
 
 import java.io.Serializable;

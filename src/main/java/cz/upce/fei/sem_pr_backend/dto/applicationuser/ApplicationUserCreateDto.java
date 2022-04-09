@@ -1,6 +1,7 @@
-package cz.upce.fei.sem_pr_backend.dto;
+package cz.upce.fei.sem_pr_backend.dto.applicationuser;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import cz.upce.fei.sem_pr_backend.dto.profile.ProfileCreateDto;
 import lombok.Data;
 
 import javax.validation.constraints.Email;

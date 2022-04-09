@@ -3,8 +3,7 @@ package cz.upce.fei.sem_pr_backend.service;
 import cz.upce.fei.sem_pr_backend.domain.ApplicationUser;
 import cz.upce.fei.sem_pr_backend.domain.Role;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.RoleType;
-import cz.upce.fei.sem_pr_backend.dto.ApplicationUserCreateDto;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserCreateDto;
 
 import java.util.List;
 

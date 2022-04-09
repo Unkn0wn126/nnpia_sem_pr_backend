@@ -5,7 +5,7 @@ import cz.upce.fei.sem_pr_backend.domain.Profile;
 import cz.upce.fei.sem_pr_backend.domain.Role;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.RoleType;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.UserState;
-import cz.upce.fei.sem_pr_backend.dto.ApplicationUserCreateDto;
+import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserCreateDto;
 import cz.upce.fei.sem_pr_backend.repository.ApplicationUserRepository;
 import cz.upce.fei.sem_pr_backend.repository.ProfileRepository;
 import cz.upce.fei.sem_pr_backend.repository.RoleRepository;

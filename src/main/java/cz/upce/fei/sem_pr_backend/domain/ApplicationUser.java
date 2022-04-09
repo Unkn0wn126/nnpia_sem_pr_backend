@@ -25,7 +25,7 @@ import java.util.Set;
 public class ApplicationUser{
     @Id
     @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -47,7 +47,7 @@ public class ApplicationUser{
     @Column(nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "author", orphanRemoval = true)
+    @OneToMany(mappedBy = "author", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @ToString.Exclude
     private Set<Issue> issues = new java.util.LinkedHashSet<>();
 
