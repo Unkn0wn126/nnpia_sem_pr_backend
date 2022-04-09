@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import java.util.List;
 
 public interface ApplicationUserService {
+    ApplicationUser createNormalUser(ApplicationUser user);
     ApplicationUser saveUser(ApplicationUser user);
     Role saveRole(Role role);
     void addRoleToUser(String username, RoleType roleName);

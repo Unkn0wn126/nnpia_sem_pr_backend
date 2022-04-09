@@ -33,20 +33,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
         customAuthenticationFilter.setFilterProcessesUrl("/api/v1/login");
+        http.cors().and().csrf().disable(); // TODO: remove
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.authorizeRequests(authorizeRequests ->
             authorizeRequests
-                    .antMatchers("/api/v1/users/**").hasAnyRole("USER", "ADMIN")
-                    .antMatchers(HttpMethod.POST, "/api/v1/issues/**").hasAnyRole("USER", "ADMIN")
-                    .antMatchers(HttpMethod.PUT, "/api/v1/issues/**").hasAnyRole("USER", "ADMIN")
-                    .antMatchers(HttpMethod.DELETE, "/api/v1/issues/**").hasAnyRole("USER", "ADMIN")
-                    .antMatchers(HttpMethod.POST, "/api/v1/comments/**").hasAnyRole("USER", "ADMIN")
-                    .antMatchers(HttpMethod.PUT, "/api/v1/comments/**").hasAnyRole("USER", "ADMIN")
-                    .antMatchers(HttpMethod.DELETE, "/api/v1/comments/**").hasAnyRole("USER", "ADMIN")
-                    .antMatchers(HttpMethod.POST, "/**").hasAnyRole("USER", "ADMIN")
-                    .antMatchers(HttpMethod.PUT, "/**").hasAnyRole("USER", "ADMIN")
-                    .antMatchers(HttpMethod.DELETE, "/**").hasAnyRole("USER", "ADMIN")
-                    .antMatchers("/**").permitAll()
+                    .antMatchers("/api/v1/login/**", "/api/v1/register/**", "/api/v1/token/refresh/**").permitAll()
+                    .antMatchers("/api/v1/users/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                    .antMatchers(HttpMethod.POST, "/api/v1/issues/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                    .antMatchers(HttpMethod.PUT, "/api/v1/issues/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                    .antMatchers(HttpMethod.DELETE, "/api/v1/issues/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                    .antMatchers(HttpMethod.POST, "/api/v1/comments/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                    .antMatchers(HttpMethod.PUT, "/api/v1/comments/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                    .antMatchers(HttpMethod.DELETE, "/api/v1/comments/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                    .antMatchers(HttpMethod.POST, "/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                    .antMatchers(HttpMethod.PUT, "/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                    .antMatchers(HttpMethod.DELETE, "/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
+                    .antMatchers(HttpMethod.GET, "/**").permitAll()
+                    .anyRequest().authenticated()
         );
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);

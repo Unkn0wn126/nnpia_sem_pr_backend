@@ -35,8 +35,16 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         ApplicationUser user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with name " + username + " not found"));
-        List<SimpleGrantedAuthority> grantedAuthorities = user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.toString())).collect(Collectors.toList());
+        List<SimpleGrantedAuthority> grantedAuthorities = user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getType().toString())).collect(Collectors.toList());
         return new User(username, user.getPassword(), grantedAuthorities);
+    }
+
+    @Override
+    public ApplicationUser createNormalUser(ApplicationUser user) {
+        ApplicationUser applicationUser = saveUser(user);
+        addRoleToUser(applicationUser.getUsername(), RoleType.ROLE_USER);
+
+        return applicationUser;
     }
 
     @Override
