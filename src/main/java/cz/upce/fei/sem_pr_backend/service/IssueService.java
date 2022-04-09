@@ -11,7 +11,7 @@ import java.util.List;
 public interface IssueService {
     Issue createIssue(String authorName, IssueCreateDto issueCreateDto);
 
-    void updateIssue(String author, IssueUpdateDto issueUpdateDto);
+    void updateIssue(String author, Long id, IssueUpdateDto issueUpdateDto);
     void deleteIssue(String author, Long id);
 
     IssueGetDto getIssueById(Long id);

@@ -11,7 +11,6 @@ import java.util.Date;
 
 @Data
 public class IssueUpdateDto implements Serializable {
-    private final Long id;
     private final String header;
     private final String content;
     private final IssueSeverity severity;

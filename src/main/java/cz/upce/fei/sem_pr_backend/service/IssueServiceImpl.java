@@ -43,8 +43,8 @@ public class IssueServiceImpl implements IssueService{
     }
 
     @Override
-    public void updateIssue(String author, IssueUpdateDto issueUpdateDto) {
-        Issue issue = issueRepository.findById(issueUpdateDto.getId()).orElseThrow(() -> new RuntimeException("No such issue")); // TODO better exception
+    public void updateIssue(String author, Long id, IssueUpdateDto issueUpdateDto) {
+        Issue issue = issueRepository.findById(id).orElseThrow(() -> new RuntimeException("No such issue")); // TODO better exception
         if (authorizationUtil.isAdmin(author) || issue.getAuthor().getUsername().equals(author)){
             issue.setHeader(issueUpdateDto.getHeader());
             issue.setContent(issueUpdateDto.getContent());

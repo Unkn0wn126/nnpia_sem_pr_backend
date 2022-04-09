@@ -40,9 +40,9 @@ public class IssueController {
         System.out.println("delete issue with id " + id);
     }
 
-    @PutMapping("/update")
-    public void updateIssueById(Principal principal, @RequestBody @Valid IssueUpdateDto issueUpdateDto){
-        issueService.updateIssue(principal.getName(), issueUpdateDto);
+    @PutMapping("/update/{id}")
+    public void updateIssueById(Principal principal, @RequestBody @Valid IssueUpdateDto issueUpdateDto, @PathVariable Long id){
+        issueService.updateIssue(principal.getName(), id, issueUpdateDto);
     }
 
     @PostMapping("/create")
