@@ -3,9 +3,11 @@ package cz.upce.fei.sem_pr_backend.service;
 import cz.upce.fei.sem_pr_backend.domain.ApplicationUser;
 import cz.upce.fei.sem_pr_backend.domain.Role;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.RoleType;
+import cz.upce.fei.sem_pr_backend.domain.enum_type.UserState;
+import cz.upce.fei.sem_pr_backend.dto.ApplicationUserCreateDto;
 import cz.upce.fei.sem_pr_backend.repository.ApplicationUserRepository;
 import cz.upce.fei.sem_pr_backend.repository.RoleRepository;
-import org.springframework.data.crossstore.ChangeSetPersister;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,11 +26,13 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
     private final ApplicationUserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ModelMapper modelMapper;
 
-    public ApplicationUserServiceImpl(ApplicationUserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public ApplicationUserServiceImpl(ApplicationUserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -40,15 +43,17 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
     }
 
     @Override
-    public ApplicationUser createNormalUser(ApplicationUser user) {
-        ApplicationUser applicationUser = saveUser(user);
+    public ApplicationUser createNormalUser(ApplicationUserCreateDto userDto) {
+        ApplicationUser applicationUser = saveUser(userDto);
         addRoleToUser(applicationUser.getUsername(), RoleType.ROLE_USER);
 
         return applicationUser;
     }
 
     @Override
-    public ApplicationUser saveUser(ApplicationUser user) {
+    public ApplicationUser saveUser(ApplicationUserCreateDto userDto) {
+        ApplicationUser user = modelMapper.map(userDto, ApplicationUser.class);
+        user.setState(UserState.ACTIVE);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }

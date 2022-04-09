@@ -2,6 +2,7 @@ package cz.upce.fei.sem_pr_backend.service;
 
 import cz.upce.fei.sem_pr_backend.domain.ApplicationUser;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.UserState;
+import cz.upce.fei.sem_pr_backend.dto.ApplicationUserCreateDto;
 import cz.upce.fei.sem_pr_backend.repository.ApplicationUserRepository;
 import cz.upce.fei.sem_pr_backend.repository.RoleRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,7 +30,7 @@ class UserServiceTests {
 
     @BeforeEach
     void initUseCase(){
-        userService = new ApplicationUserServiceImpl(userRepository, roleRepository, new BCryptPasswordEncoder());
+        userService = new ApplicationUserServiceImpl(userRepository, roleRepository, new BCryptPasswordEncoder(), new ModelMapper());
     }
 
     @Test
@@ -39,9 +41,11 @@ class UserServiceTests {
         user.setUsername("user");
         user.setState(UserState.ACTIVE);
 
+        ApplicationUserCreateDto applicationUserCreateDto = new ApplicationUserCreateDto("user", "email@example.com", "P4ssw0rd$");
+
         when(userRepository.save(any(ApplicationUser.class))).thenReturn(user);
 
-        ApplicationUser created = userService.saveUser(user);
+        ApplicationUser created = userService.saveUser(applicationUserCreateDto);
         assertThat(created.getUsername()).isSameAs(user.getUsername());
     }
 

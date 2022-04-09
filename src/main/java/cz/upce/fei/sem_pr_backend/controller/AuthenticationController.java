@@ -21,11 +21,6 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public void register(@RequestBody ApplicationUserCreateDto userRegisterDto){
-        ApplicationUser user = new ApplicationUser();
-        user.setState(UserState.ACTIVE);
-        user.setUsername(userRegisterDto.getUsername());
-        user.setPassword(userRegisterDto.getPassword());
-        user.setEmail(userRegisterDto.getEmail());
-        userService.createNormalUser(user);
+        userService.createNormalUser(userRegisterDto);
     }
 }
