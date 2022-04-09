@@ -12,7 +12,8 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class Role {
     @Id
     @Column(name = "id", nullable = false)
@@ -23,7 +24,7 @@ public class Role {
     @Column(unique = true, nullable = false)
     private RoleType type;
 
-    @ManyToMany
+    @ManyToMany(mappedBy = "roles")
     @ToString.Exclude
     private Set<ApplicationUser> users;
 

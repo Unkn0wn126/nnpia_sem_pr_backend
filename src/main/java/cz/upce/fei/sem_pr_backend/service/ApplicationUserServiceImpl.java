@@ -1,19 +1,70 @@
 package cz.upce.fei.sem_pr_backend.service;
 
 import cz.upce.fei.sem_pr_backend.domain.ApplicationUser;
+import cz.upce.fei.sem_pr_backend.domain.Role;
+import cz.upce.fei.sem_pr_backend.domain.enum_type.RoleType;
 import cz.upce.fei.sem_pr_backend.repository.ApplicationUserRepository;
+import cz.upce.fei.sem_pr_backend.repository.RoleRepository;
+import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
-public class ApplicationUserServiceImpl implements ApplicationUserService {
+public class ApplicationUserServiceImpl implements ApplicationUserService, UserDetailsService {
 
     private final ApplicationUserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public ApplicationUserServiceImpl(ApplicationUserRepository userRepository) {
+    public ApplicationUserServiceImpl(ApplicationUserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    public ApplicationUser save(ApplicationUser user){
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        ApplicationUser user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with name " + username + " not found"));
+        List<SimpleGrantedAuthority> grantedAuthorities = user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.toString())).collect(Collectors.toList());
+        return new User(username, user.getPassword(), grantedAuthorities);
+    }
+
+    @Override
+    public ApplicationUser saveUser(ApplicationUser user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
+    }
+
+    @Override
+    public Role saveRole(Role role) {
+        return roleRepository.save(role);
+    }
+
+    @Override
+    @Transactional
+    public void addRoleToUser(String username, RoleType roleName) {
+        ApplicationUser user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with name: " + username + " not found!"));
+        Role role = roleRepository.findByType(roleName).orElseThrow(() -> new RuntimeException("No such role"));
+        user.getRoles().add(role);
+    }
+
+    @Override
+    public ApplicationUser getUser(String username) {
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with name: " + username + " not found!"));
+    }
+
+    @Override
+    public List<ApplicationUser> getUsers() {
+        return userRepository.findAll();
     }
 }

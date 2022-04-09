@@ -1,10 +1,7 @@
 package cz.upce.fei.sem_pr_backend.domain;
 
 import cz.upce.fei.sem_pr_backend.domain.enum_type.UserState;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -22,7 +19,8 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "users")
 public class ApplicationUser{
     @Id
@@ -30,22 +28,23 @@ public class ApplicationUser{
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "users", cascade = CascadeType.REMOVE)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
     private Set<Role> roles = new java.util.LinkedHashSet<>();
 
     @NotEmpty
-    @NotNull
     @Column(length = 45, unique = true, nullable = false)
     private String username;
 
     @Email
-    @NotNull
     @Column(length = 45, unique = true, nullable = false)
     private String email;
 
     @Column(nullable = false)
-    @NotNull
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")
     private String password;
 
     @OneToMany(mappedBy = "author", orphanRemoval = true)
@@ -60,7 +59,6 @@ public class ApplicationUser{
     private Profile profile;
 
     @Enumerated(EnumType.STRING)
-    @NotNull
     @Column(nullable = false)
     private UserState state;
 
@@ -70,6 +68,13 @@ public class ApplicationUser{
 
     @UpdateTimestamp
     private Timestamp lastEdited;
+
+    public ApplicationUser(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.state = UserState.ACTIVE;
+    }
 
     @Override
     public boolean equals(Object o) {

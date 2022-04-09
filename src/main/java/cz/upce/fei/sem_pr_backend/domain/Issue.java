@@ -3,10 +3,7 @@ package cz.upce.fei.sem_pr_backend.domain;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueCompletionState;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueSeverity;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueVisibility;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -23,7 +20,8 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "issues")
 public class Issue {
     @Id
