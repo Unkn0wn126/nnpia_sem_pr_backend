@@ -4,6 +4,7 @@ import cz.upce.fei.sem_pr_backend.domain.ApplicationUser;
 import cz.upce.fei.sem_pr_backend.domain.Role;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.RoleType;
 import cz.upce.fei.sem_pr_backend.dto.ApplicationUserCreateDto;
+import cz.upce.fei.sem_pr_backend.dto.ProfileCreateDto;
 import cz.upce.fei.sem_pr_backend.service.ApplicationUserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.CommandLineRunner;
@@ -38,8 +39,8 @@ public class SemPrBackendApplication {
             userService.saveRole(new Role(null, RoleType.ROLE_ADMIN, new HashSet<>()));
             userService.saveRole(new Role(null, RoleType.ROLE_USER, new HashSet<>()));
 
-            userService.saveUser(new ApplicationUserCreateDto("admin", "admin@root.com", "P4ssw0rd$"));
-            userService.saveUser(new ApplicationUserCreateDto("rando", "email@example.com", "P4ssw0rd$"));
+            userService.saveUser(new ApplicationUserCreateDto("admin", "admin@root.com", "P4ssw0rd$", new ProfileCreateDto("Root", null)));
+            userService.saveUser(new ApplicationUserCreateDto("rando", "email@example.com", "P4ssw0rd$", new ProfileCreateDto("Rando", null)));
 
             userService.addRoleToUser("admin", RoleType.ROLE_ADMIN);
             userService.addRoleToUser("rando", RoleType.ROLE_USER);

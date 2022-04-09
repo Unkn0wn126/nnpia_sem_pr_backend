@@ -3,7 +3,9 @@ package cz.upce.fei.sem_pr_backend.service;
 import cz.upce.fei.sem_pr_backend.domain.ApplicationUser;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.UserState;
 import cz.upce.fei.sem_pr_backend.dto.ApplicationUserCreateDto;
+import cz.upce.fei.sem_pr_backend.dto.ProfileCreateDto;
 import cz.upce.fei.sem_pr_backend.repository.ApplicationUserRepository;
+import cz.upce.fei.sem_pr_backend.repository.ProfileRepository;
 import cz.upce.fei.sem_pr_backend.repository.RoleRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,11 +28,14 @@ class UserServiceTests {
     @Mock
     private RoleRepository roleRepository;
 
+    @Mock
+    private ProfileRepository profileRepository;
+
     ApplicationUserServiceImpl userService;
 
     @BeforeEach
     void initUseCase(){
-        userService = new ApplicationUserServiceImpl(userRepository, roleRepository, new BCryptPasswordEncoder(), new ModelMapper());
+        userService = new ApplicationUserServiceImpl(userRepository, roleRepository, profileRepository, new BCryptPasswordEncoder(), new ModelMapper());
     }
 
     @Test
@@ -41,7 +46,7 @@ class UserServiceTests {
         user.setUsername("user");
         user.setState(UserState.ACTIVE);
 
-        ApplicationUserCreateDto applicationUserCreateDto = new ApplicationUserCreateDto("user", "email@example.com", "P4ssw0rd$");
+        ApplicationUserCreateDto applicationUserCreateDto = new ApplicationUserCreateDto("user", "email@example.com", "P4ssw0rd$", new ProfileCreateDto("Userr", ""));
 
         when(userRepository.save(any(ApplicationUser.class))).thenReturn(user);
 

@@ -1,5 +1,6 @@
 package cz.upce.fei.sem_pr_backend.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -19,4 +20,7 @@ public class ApplicationUserCreateDto implements Serializable {
     @NotNull
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$")
     private final String password;
+
+    @JsonProperty("profile")
+    private final ProfileCreateDto profile;
 }
