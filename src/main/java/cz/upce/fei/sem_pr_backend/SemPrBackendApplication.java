@@ -8,6 +8,7 @@ import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueVisibility;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.RoleType;
 import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserCreateDto;
 import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserGetDto;
+import cz.upce.fei.sem_pr_backend.dto.comment.CommentCreateDto;
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueCreateDto;
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueGetDto;
 import cz.upce.fei.sem_pr_backend.dto.profile.ProfileCreateDto;
@@ -58,6 +59,8 @@ public class SemPrBackendApplication {
 
             issueService.createIssue("admin", new IssueCreateDto("It's not fucking working", "Title", IssueSeverity.LOW, IssueVisibility.PUBLIC, null));
             issueService.createIssue("rando", new IssueCreateDto("It's still not fucking working", "Title...", IssueSeverity.LOW, IssueVisibility.PUBLIC, null));
+
+            issueService.createCommentToIssue("admin", 8L, new CommentCreateDto("Get over it"));
         };
     }
 }

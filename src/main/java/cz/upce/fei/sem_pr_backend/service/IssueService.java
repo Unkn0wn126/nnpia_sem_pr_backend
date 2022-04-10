@@ -1,7 +1,10 @@
 package cz.upce.fei.sem_pr_backend.service;
 
+import cz.upce.fei.sem_pr_backend.domain.Comment;
 import cz.upce.fei.sem_pr_backend.domain.Issue;
+import cz.upce.fei.sem_pr_backend.dto.comment.CommentCreateDto;
 import cz.upce.fei.sem_pr_backend.dto.comment.CommentGetDto;
+import cz.upce.fei.sem_pr_backend.dto.comment.CommentUpdateDto;
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueCreateDto;
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueGetDto;
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueUpdateDto;
@@ -17,5 +20,12 @@ public interface IssueService {
     IssueGetDto getIssueById(Long id);
     List<IssueGetDto> getAllIssues();
     List<IssueGetDto> getIssueByAuthorName(String authorName);
+
+    CommentGetDto getCommentById(Long id);
+    List<CommentGetDto> getAllComments();
+    List<CommentGetDto> getCommentsByAuthor(String authorName);
     List<CommentGetDto> getIssueComments(Long id);
+    Comment createCommentToIssue(String authorName, Long issueId, CommentCreateDto commentCreateDto);
+    void updateComment(String author, Long id, CommentUpdateDto commentUpdateDto);
+    void deleteComment(String author, Long id);
 }

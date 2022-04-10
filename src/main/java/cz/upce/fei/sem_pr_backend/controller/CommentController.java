@@ -1,44 +1,58 @@
 package cz.upce.fei.sem_pr_backend.controller;
 
+import cz.upce.fei.sem_pr_backend.domain.Comment;
+import cz.upce.fei.sem_pr_backend.dto.comment.CommentCreateDto;
+import cz.upce.fei.sem_pr_backend.dto.comment.CommentGetDto;
+import cz.upce.fei.sem_pr_backend.dto.comment.CommentUpdateDto;
+import cz.upce.fei.sem_pr_backend.service.IssueService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/comments")
 public class CommentController {
 
+    private final IssueService issueService;
+
+    public CommentController(IssueService issueService) {
+        this.issueService = issueService;
+    }
+
     @GetMapping("/")
-    public void getComments(){
-        System.out.println("comments");
+    public List<CommentGetDto> getComments(){
+        return issueService.getAllComments();
     }
 
     @GetMapping("/{id}")
-    public void getCommentById(@PathVariable Long id){
-        System.out.println("comment with id " + id);
+    public CommentGetDto getCommentById(@PathVariable Long id){
+        return issueService.getCommentById(id);
     }
 
     @GetMapping("/issue/{id}")
-    public void getCommentsByIssueId(@PathVariable Long id){
-        System.out.println("comment with issue id " + id);
+    public List<CommentGetDto> getCommentsByIssueId(@PathVariable Long id){
+        return issueService.getIssueComments(id);
     }
 
     @GetMapping("/user/{username}")
-    public void getCommentsByAuthorUsername(@PathVariable String username){
-        System.out.println("comment with author " + username);
+    public List<CommentGetDto> getCommentsByAuthorUsername(@PathVariable String username){
+        return issueService.getCommentsByAuthor(username);
     }
 
     @DeleteMapping("/delete/{id}")
-    public void deleteCommentById(@PathVariable Long id){
-        System.out.println("delete comment with id " + id);
+    public void deleteCommentById(Principal principal, @PathVariable Long id){
+        issueService.deleteIssue(principal.getName(), id);
     }
 
     @PutMapping("/update/{id}")
-    public void updateCommentById(@PathVariable Long id){
-        System.out.println("update comment with id " + id);
-
+    public void updateCommentById(Principal principal, @PathVariable Long id, @RequestBody CommentUpdateDto commentUpdateDto){
+        issueService.updateComment(principal.getName(), id, commentUpdateDto);
     }
 
     @PostMapping("/create/{id}")
-    public void postCommentToIssue(@PathVariable String id){
-        System.out.println("create comment to issue with id " + id);
+    public void postCommentToIssue(Principal principal, @PathVariable Long id, @RequestBody CommentCreateDto commentCreateDto){
+        issueService.createCommentToIssue(principal.getName(), id, commentCreateDto);
     }
 }
