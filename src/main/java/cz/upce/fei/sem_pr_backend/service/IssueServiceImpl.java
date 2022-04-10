@@ -72,7 +72,9 @@ public class IssueServiceImpl implements IssueService{
 
     @Override
     public List<IssueGetDto> getAllIssues() {
-        return issueRepository.findAll().stream().map(issue -> modelMapper.map(issue, IssueGetDto.class)).collect(Collectors.toList());
+        return issueRepository.findAll()
+                .stream().map(issue -> modelMapper.map(issue, IssueGetDto.class))
+                .collect(Collectors.toList());
     }
 
     @Override
