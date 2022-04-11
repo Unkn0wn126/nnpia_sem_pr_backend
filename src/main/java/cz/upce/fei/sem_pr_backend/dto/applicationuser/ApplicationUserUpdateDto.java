@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Email;
 import java.io.Serializable;
 
 @Data
@@ -12,5 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ApplicationUserUpdateDto implements Serializable {
     private Long id;
+    @Email
+    private String email;
     private ProfileUpdateDto profile;
 }

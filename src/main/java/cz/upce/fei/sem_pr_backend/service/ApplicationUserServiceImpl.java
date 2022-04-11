@@ -1,11 +1,17 @@
 package cz.upce.fei.sem_pr_backend.service;
 
+import cz.upce.fei.sem_pr_backend.authorization.AuthorizationUtil;
 import cz.upce.fei.sem_pr_backend.domain.ApplicationUser;
+import cz.upce.fei.sem_pr_backend.domain.Issue;
 import cz.upce.fei.sem_pr_backend.domain.Profile;
 import cz.upce.fei.sem_pr_backend.domain.Role;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.RoleType;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.UserState;
 import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserCreateDto;
+import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserGetDto;
+import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserUpdateDto;
+import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserUpdatePasswordDto;
+import cz.upce.fei.sem_pr_backend.dto.profile.ProfileUpdateDto;
 import cz.upce.fei.sem_pr_backend.repository.ApplicationUserRepository;
 import cz.upce.fei.sem_pr_backend.repository.ProfileRepository;
 import cz.upce.fei.sem_pr_backend.repository.RoleRepository;
@@ -30,13 +36,20 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
     private final ProfileRepository profileRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
+    private final AuthorizationUtil authorizationUtil;
 
-    public ApplicationUserServiceImpl(ApplicationUserRepository userRepository, RoleRepository roleRepository, ProfileRepository profileRepository, PasswordEncoder passwordEncoder, ModelMapper modelMapper) {
+    public ApplicationUserServiceImpl(ApplicationUserRepository userRepository,
+                                      RoleRepository roleRepository,
+                                      ProfileRepository profileRepository,
+                                      PasswordEncoder passwordEncoder,
+                                      ModelMapper modelMapper,
+                                      AuthorizationUtil authorizationUtil) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.profileRepository = profileRepository;
         this.passwordEncoder = passwordEncoder;
         this.modelMapper = modelMapper;
+        this.authorizationUtil = authorizationUtil;
     }
 
     @Override
@@ -49,7 +62,8 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
     @Override
     public ApplicationUser createNormalUser(ApplicationUserCreateDto userDto) {
         ApplicationUser user = saveUser(userDto);
-        addRoleToUser(user.getUsername(), RoleType.ROLE_USER);
+        Role role = roleRepository.findByType(RoleType.ROLE_USER).orElseThrow(() -> new RuntimeException("No such role"));
+        user.getRoles().add(role);
         return user;
     }
 
@@ -81,12 +95,67 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
     }
 
     @Override
-    public ApplicationUser getUser(String username) {
-        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with name: " + username + " not found!"));
+    public ApplicationUserGetDto getUserByUsername(String username) {
+        ApplicationUser user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User with name: " + username + " not found!"));
+        return modelMapper.map(user, ApplicationUserGetDto.class);
     }
 
     @Override
-    public List<ApplicationUser> getUsers() {
-        return userRepository.findAll();
+    public ApplicationUserGetDto getUserById(Long id) {
+        ApplicationUser user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User with id: " + id + " not found!"));// TODO better exception
+        return modelMapper.map(user, ApplicationUserGetDto.class);
+    }
+
+    @Override
+    public void deleteUser(String username, Long id) {
+        ApplicationUser user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("No such user")); // TODO better exception
+        if (authorizationUtil.isAdmin(username) || user.getUsername().equals(username)){
+            userRepository.deleteById(id);
+        }else{
+            throw new RuntimeException("Unauthorized!"); // TODO better exception
+        }
+    }
+
+    @Override
+    public void updateUserInfo(String username, Long id, ApplicationUserUpdateDto userUpdateDto) {
+        ApplicationUser user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("No such user")); // TODO better exception
+        Profile profile = profileRepository.findById(user.getProfile().getId()).orElseThrow(() -> new RuntimeException("No such user")); // TODO better exception
+        if (authorizationUtil.isAdmin(username) || user.getUsername().equals(username)){
+            user.setEmail(userUpdateDto.getEmail());
+            ProfileUpdateDto profileUpdateDto = userUpdateDto.getProfile();
+            profile.setProfilePicturePath(profileUpdateDto.getProfilePicturePath()); // TODO change to base64 and convert
+            profile.setNickname(profileUpdateDto.getNickname());
+
+            userRepository.save(user);
+            profileRepository.save(profile);
+
+        }else{
+            throw new RuntimeException("Unauthorized!"); // TODO better exception
+        }
+    }
+
+    @Override
+    public void updateUserPassword(String username, Long id, ApplicationUserUpdatePasswordDto userUpdatePasswordDto) {
+        ApplicationUser user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("No such user")); // TODO better exception
+        if (authorizationUtil.isAdmin(username) || user.getUsername().equals(username)){
+            // TODO check if old password is correct
+            /*String hash = passwordEncoder.encode(userUpdatePasswordDto.getOldPassword());
+            if (!hash.equals(user.getPassword())){
+                throw new RuntimeException("Passwords don't match!");
+            }*/
+            user.setPassword(passwordEncoder.encode(userUpdatePasswordDto.getNewPassword()));
+            userRepository.save(user);
+        }else{
+            throw new RuntimeException("Unauthorized!"); // TODO better exception
+        }
+    }
+
+    @Override
+    public List<ApplicationUserGetDto> getUsers() {
+        return userRepository.findAll()
+                .stream().map(applicationUser -> modelMapper.map(applicationUser, ApplicationUserGetDto.class))
+                .collect(Collectors.toList());
     }
 }

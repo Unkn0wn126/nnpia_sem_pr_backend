@@ -1,11 +1,16 @@
 package cz.upce.fei.sem_pr_backend.dto.issue;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import cz.upce.fei.sem_pr_backend.domain.ApplicationUser;
 import cz.upce.fei.sem_pr_backend.domain.Issue;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueCompletionState;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueSeverity;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueVisibility;
 import cz.upce.fei.sem_pr_backend.dto.DTO;
+import cz.upce.fei.sem_pr_backend.dto.JsonDateDeserializer;
+import cz.upce.fei.sem_pr_backend.dto.JsonDateSerializer;
+import cz.upce.fei.sem_pr_backend.dto.JsonTimeStampSerializer;
 import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserGetDto;
 import cz.upce.fei.sem_pr_backend.dto.comment.CommentGetDto;
 import lombok.AllArgsConstructor;
@@ -13,6 +18,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
@@ -28,13 +34,17 @@ public class IssueGetDto implements Serializable, DTO {
     private Long id;
     private String header;
     private String content;
+    @JsonSerialize(using = JsonTimeStampSerializer.class)
     private Timestamp published;
+    @JsonSerialize(using = JsonTimeStampSerializer.class)
     private Timestamp lastEdited;
     @NotNull
     private IssueSeverity severity;
     @NotNull
     private IssueVisibility visibility;
     @Future(message = "Can't set goals for the past")
+    @JsonSerialize(using = JsonDateSerializer.class)
+    @DateTimeFormat(pattern = "dd-yyy-MM")
     private Date dueDate;
     @NotNull
     private IssueCompletionState completionState;

@@ -1,5 +1,7 @@
 package cz.upce.fei.sem_pr_backend.dto.profile;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import cz.upce.fei.sem_pr_backend.dto.JsonTimeStampSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +18,8 @@ public class ProfileGetDto implements Serializable {
     @NotNull
     private String nickname;
     private String profilePicturePath;
+    @JsonSerialize(using = JsonTimeStampSerializer.class)
     private Timestamp created;
+    @JsonSerialize(using = JsonTimeStampSerializer.class)
     private Timestamp lastEdited;
 }

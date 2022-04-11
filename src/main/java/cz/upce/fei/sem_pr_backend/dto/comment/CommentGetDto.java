@@ -1,9 +1,11 @@
 package cz.upce.fei.sem_pr_backend.dto.comment;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import cz.upce.fei.sem_pr_backend.domain.ApplicationUser;
 import cz.upce.fei.sem_pr_backend.domain.Comment;
 import cz.upce.fei.sem_pr_backend.domain.Issue;
 import cz.upce.fei.sem_pr_backend.dto.DTO;
+import cz.upce.fei.sem_pr_backend.dto.JsonTimeStampSerializer;
 import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserGetDto;
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueGetDto;
 import lombok.AllArgsConstructor;
@@ -21,7 +23,9 @@ import java.sql.Timestamp;
 public class CommentGetDto implements Serializable, DTO {
     private Long id;
     private String content;
+    @JsonSerialize(using = JsonTimeStampSerializer.class)
     private Timestamp created;
+    @JsonSerialize(using = JsonTimeStampSerializer.class)
     private Timestamp lastEdited;
     private ApplicationUserGetDto author;
 
