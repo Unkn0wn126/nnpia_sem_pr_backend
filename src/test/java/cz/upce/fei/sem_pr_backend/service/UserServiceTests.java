@@ -1,5 +1,6 @@
 package cz.upce.fei.sem_pr_backend.service;
 
+import cz.upce.fei.sem_pr_backend.authorization.AuthorizationUtil;
 import cz.upce.fei.sem_pr_backend.domain.ApplicationUser;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.UserState;
 import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserCreateDto;
@@ -35,7 +36,8 @@ class UserServiceTests {
 
     @BeforeEach
     void initUseCase(){
-        userService = new ApplicationUserServiceImpl(userRepository, roleRepository, profileRepository, new BCryptPasswordEncoder(), new ModelMapper(), authorizationUtil);
+        AuthorizationUtil authorizationUtil = new AuthorizationUtil(userRepository);
+        userService = new ApplicationUserServiceImpl(userRepository, roleRepository, userRoleRepository, profileRepository, new BCryptPasswordEncoder(), new ModelMapper(), authorizationUtil);
     }
 
     @Test
@@ -46,7 +48,10 @@ class UserServiceTests {
         user.setUsername("user");
         user.setState(UserState.ACTIVE);
 
-        ApplicationUserCreateDto applicationUserCreateDto = new ApplicationUserCreateDto("user", "email@example.com", "P4ssw0rd$", new ProfileCreateDto("Userr", ""));
+        ApplicationUserCreateDto applicationUserCreateDto =
+                new ApplicationUserCreateDto("user",
+                        "email@example.com", "P4ssw0rd$",
+                        new ProfileCreateDto("User", null));
 
         when(userRepository.save(any(ApplicationUser.class))).thenReturn(user);
 

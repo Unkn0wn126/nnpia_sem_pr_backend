@@ -28,13 +28,8 @@ public class ApplicationUser{
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private Set<Role> roles = new java.util.LinkedHashSet<>();
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
+    private Set<UserHasRole> roles = new java.util.LinkedHashSet<>();
 
     @NotEmpty
     @Column(length = 45, unique = true, nullable = false)

@@ -3,6 +3,7 @@ package cz.upce.fei.sem_pr_backend.repository;
 import cz.upce.fei.sem_pr_backend.domain.ApplicationUser;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.UserState;
 import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserCreateDto;
+import cz.upce.fei.sem_pr_backend.dto.profile.ProfileCreateDto;
 import cz.upce.fei.sem_pr_backend.service.ApplicationUserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -32,7 +33,10 @@ class UserRepositoryTests {
         user.setUsername("user");
         user.setState(UserState.ACTIVE);
 
-        ApplicationUserCreateDto applicationUserCreateDto = new ApplicationUserCreateDto("user", "email@example.com", "P4ssw0rd$");
+        ApplicationUserCreateDto applicationUserCreateDto =
+                new ApplicationUserCreateDto("user",
+                        "email@example.com", "P4ssw0rd$",
+                        new ProfileCreateDto("User", null));
 
         ApplicationUser created = userService.saveUser(applicationUserCreateDto);
         assertThat(created.getUsername()).isSameAs(user.getUsername());

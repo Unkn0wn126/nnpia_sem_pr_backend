@@ -24,9 +24,9 @@ public class Role {
     @Column(unique = true, nullable = false)
     private RoleType type;
 
-    @ManyToMany(mappedBy = "roles")
+    @OneToMany(mappedBy = "role")
     @ToString.Exclude
-    private Set<ApplicationUser> users;
+    private Set<UserHasRole> users;
 
     @Override
     public boolean equals(Object o) {
