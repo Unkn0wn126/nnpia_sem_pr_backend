@@ -69,14 +69,18 @@ public class JwtTokenUtil implements Serializable {
     }
 
     public String generateToken(UserDetails userDetails, String requestUrl) {
-        return doGenerateToken(userDetails, requestUrl);
+        return doGenerateToken(userDetails, requestUrl, JWT_TOKEN_VALIDITY);
     }
 
-    private String doGenerateToken(UserDetails user, String requestUrl) {
+    public String generateRefreshToken(UserDetails userDetails, String requestUrl) {
+        return doGenerateToken(userDetails, requestUrl, JWT_REFRESH_TOKEN_VALIDITY);
+    }
+
+    private String doGenerateToken(UserDetails user, String requestUrl, long validity) {
 
         return JWT.create()
                 .withSubject(user.getUsername()) // any string that I like
-                .withExpiresAt(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+                .withExpiresAt(new Date(System.currentTimeMillis() + validity * 1000))
                 .withIssuer(requestUrl)
                 .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .sign(Algorithm.HMAC512(secret.getBytes()));

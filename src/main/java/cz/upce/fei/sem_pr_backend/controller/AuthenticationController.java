@@ -46,8 +46,9 @@ public class AuthenticationController {
                 .loadUserByUsername(loginRequest.getUsername());
 
         final String token = jwtTokenUtil.generateToken(userDetails, request.getRequestURL().toString());
+        final String refreshToken = jwtTokenUtil.generateRefreshToken(userDetails, request.getRequestURL().toString());
 
-        return ResponseEntity.ok(new JwtResponse(token));
+        return ResponseEntity.ok(new JwtResponse(token, refreshToken));
     }
 
     private void authenticate(String username, String password) throws Exception {
