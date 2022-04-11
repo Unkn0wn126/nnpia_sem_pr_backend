@@ -1,1 +1,1 @@
-web: java -Dserver.port=$PORT -jar target/sem_pr_backend-0.0.1-SNAPSHOT.jar
+web: java -Dserver.port=$PORT -jar build/libs/sem_pr_backend-0.0.1-SNAPSHOT.jar
