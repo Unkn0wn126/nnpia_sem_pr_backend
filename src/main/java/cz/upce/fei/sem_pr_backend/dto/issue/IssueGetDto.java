@@ -8,6 +8,7 @@ import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueVisibility;
 import cz.upce.fei.sem_pr_backend.dto.DTO;
 import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserGetDto;
 import cz.upce.fei.sem_pr_backend.dto.comment.CommentGetDto;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.modelmapper.Converter;
@@ -22,6 +23,7 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class IssueGetDto implements Serializable, DTO {
     private Long id;
     private String header;
