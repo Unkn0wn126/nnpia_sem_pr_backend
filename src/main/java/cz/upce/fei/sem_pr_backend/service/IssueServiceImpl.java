@@ -117,7 +117,7 @@ public class IssueServiceImpl implements IssueService{
 
     @Override
     public List<CommentGetDto> getCommentsByAuthor(String authorName) {
-        return commentRepository.findAllByAuthor(authorName)
+        return commentRepository.findAllByAuthor(authorName)// TODO filtering based on visibility
                 .stream().map(comment -> modelMapper.map(comment, CommentGetDto.class))
                 .collect(Collectors.toList());
     }

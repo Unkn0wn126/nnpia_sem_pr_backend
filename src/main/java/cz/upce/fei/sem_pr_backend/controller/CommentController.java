@@ -43,7 +43,7 @@ public class CommentController {
 
     @DeleteMapping("/delete/{id}")
     public void deleteCommentById(Principal principal, @PathVariable Long id){
-        issueService.deleteIssue(principal.getName(), id);
+        issueService.deleteComment(principal.getName(), id);
     }
 
     @PutMapping("/update/{id}")

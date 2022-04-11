@@ -13,5 +13,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findAllByIssueId(@Param("issueId") Long id);
 
     @Query(value = "SELECT c from Comment c where c.author.username = :authorName")
-    List<Issue> findAllByAuthor(@Param("authorName") String authorname);
+    List<Comment> findAllByAuthor(@Param("authorName") String authorname);
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 @RestController
@@ -38,13 +39,13 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody JwtRequest loginRequest) throws Exception {
+    public ResponseEntity<?> login(@RequestBody JwtRequest loginRequest, HttpServletRequest request) throws Exception {
         authenticate(loginRequest.getUsername(), loginRequest.getPassword());
 
         final UserDetails userDetails =userService
                 .loadUserByUsername(loginRequest.getUsername());
 
-        final String token = jwtTokenUtil.generateToken(userDetails);
+        final String token = jwtTokenUtil.generateToken(userDetails, request.getRequestURL().toString());
 
         return ResponseEntity.ok(new JwtResponse(token));
     }

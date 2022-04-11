@@ -26,6 +26,7 @@ public class JwtTokenUtil implements Serializable {
     private static final long serialVersionUID = -2550185165626007488L;
 
     public static final long JWT_TOKEN_VALIDITY = 5*60*60;
+    public static final long JWT_REFRESH_TOKEN_VALIDITY = 30*60*60;
 
     @Value("${jwt.secret}")
     private String secret;
@@ -67,16 +68,16 @@ public class JwtTokenUtil implements Serializable {
         return false;
     }
 
-    public String generateToken(UserDetails userDetails) {
-        return doGenerateToken(userDetails);
+    public String generateToken(UserDetails userDetails, String requestUrl) {
+        return doGenerateToken(userDetails, requestUrl);
     }
 
-    private String doGenerateToken(UserDetails user) {
+    private String doGenerateToken(UserDetails user, String requestUrl) {
 
         return JWT.create()
                 .withSubject(user.getUsername()) // any string that I like
-                .withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
-                //.withIssuer(request.getRequestURL().toString())
+                .withExpiresAt(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+                .withIssuer(requestUrl)
                 .withClaim("roles", user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .sign(Algorithm.HMAC512(secret.getBytes()));
 
