@@ -25,7 +25,7 @@ import java.util.Set;
 public class ApplicationUser{
     @Id
     @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
