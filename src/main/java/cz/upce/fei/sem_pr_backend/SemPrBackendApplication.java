@@ -49,7 +49,7 @@ public class SemPrBackendApplication {
     }
 
     @Bean
-    @Profile("!prod")
+    //@Profile("!prod")
     CommandLineRunner run(ApplicationUserService userService, IssueService issueService){
         return args -> {
             userService.saveRole(new Role(null, RoleType.ROLE_ADMIN, new HashSet<>()));
