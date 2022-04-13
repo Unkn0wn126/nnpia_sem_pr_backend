@@ -6,6 +6,7 @@ import cz.upce.fei.sem_pr_backend.domain.enum_type.RoleType;
 import cz.upce.fei.sem_pr_backend.repository.ApplicationUserRepository;
 import org.springframework.stereotype.Component;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,7 +21,6 @@ public class AuthorizationUtil {
 
     public boolean isAdmin(String username){
         ApplicationUser user = userRepository.findByUsername(username).get();
-//        List<Role> roles = user.getRoles().stream().map(userHasRole -> userHasRole.getRole()).collect(Collectors.toList());
         List<Role> roles = user.getRoles().stream().collect(Collectors.toList());
         for (Role role:
                 roles) {
@@ -29,5 +29,15 @@ public class AuthorizationUtil {
         }
 
         return false;
+    }
+
+    public boolean canAlterResource(Principal principal, Long authorId){
+        if (principal == null)
+            return false;
+        if (isAdmin(principal.getName()))
+            return true;
+
+        ApplicationUser user = userRepository.findByUsername(principal.getName()).get();
+        return authorId.equals(user.getId());
     }
 }

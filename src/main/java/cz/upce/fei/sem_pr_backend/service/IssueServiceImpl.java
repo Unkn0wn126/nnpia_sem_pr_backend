@@ -5,6 +5,7 @@ import cz.upce.fei.sem_pr_backend.domain.ApplicationUser;
 import cz.upce.fei.sem_pr_backend.domain.Comment;
 import cz.upce.fei.sem_pr_backend.domain.Issue;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueCompletionState;
+import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueVisibility;
 import cz.upce.fei.sem_pr_backend.dto.comment.CommentCreateDto;
 import cz.upce.fei.sem_pr_backend.dto.comment.CommentGetDto;
 import cz.upce.fei.sem_pr_backend.dto.comment.CommentUpdateDto;
@@ -20,6 +21,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -90,24 +94,70 @@ public class IssueServiceImpl implements IssueService{
     }
 
     @Override
-    public IssueGetDto getIssueById(Long id) {
-        // TODO filtering based on visibility
+    public IssueGetDto getIssueById(Principal principal, Long id) {
         Issue issue = issueRepository
-                .findById(id)
+                .findByIdAndVisibility(id, getAuthenticadedVisibilities(), principal.getName())
                 .orElseThrow(() -> new ResourceNotFoundException("No such issue with id: " + id));
+
         return modelMapper.map(issue, IssueGetDto.class);
     }
 
     @Override
+    public IssueGetDto getPublicIssueById(Long id) {
+        Issue issue = issueRepository
+                .findByIdAndVisibility(id, getAuthenticadedVisibilities(), null)
+                .orElseThrow(() -> new ResourceNotFoundException("No such issue with id: " + id));
+
+        return modelMapper.map(issue, IssueGetDto.class);
+    }
+
+    private List<IssueVisibility> getAuthenticadedVisibilities(){
+        List<IssueVisibility> visibilities = new ArrayList<>();
+        visibilities.add(IssueVisibility.PUBLIC);
+        visibilities.add(IssueVisibility.INTERNAL);
+
+        return visibilities;
+    }
+
+    @Override
     public List<IssueGetDto> getAllIssues() {
-        return issueRepository.findAll() // TODO filtering based on visibility
+        return issueRepository.findAll()
                 .stream().map(issue -> modelMapper.map(issue, IssueGetDto.class))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<IssueGetDto> getIssueByAuthorName(String authorName) {
-        return issueRepository.findAllByAuthor(authorName) // TODO filtering based on visibility
+    public List<IssueGetDto> getAllAccessibleIssues(Principal principal) {
+        List<IssueVisibility> visibilities = new ArrayList<>();
+        visibilities.add(IssueVisibility.PUBLIC);
+        visibilities.add(IssueVisibility.INTERNAL);
+        return issueRepository.findAllByVisibility(visibilities, principal.getName()) // TODO filtering based on visibility
+                .stream().map(issue -> modelMapper.map(issue, IssueGetDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<IssueGetDto> getAllPublicIssues() {
+        return issueRepository.findAllByVisibility(new ArrayList<>(Arrays.asList(IssueVisibility.PUBLIC)), null)
+                .stream().map(issue -> modelMapper.map(issue, IssueGetDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<IssueGetDto> getIssuesByAuthorName(Principal principal, String authorName) {
+        List<IssueVisibility> visibilities = new ArrayList<>();
+        visibilities.add(IssueVisibility.PUBLIC);
+        visibilities.add(IssueVisibility.INTERNAL);
+        return issueRepository.findAllByAuthor(authorName, visibilities, principal.getName())
+                .stream().map(issue -> modelMapper.map(issue, IssueGetDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<IssueGetDto> getPublicIssuesByAuthorName(String authorName) {
+        List<IssueVisibility> visibilities = new ArrayList<>();
+        visibilities.add(IssueVisibility.PUBLIC);
+        return issueRepository.findAllByAuthor(authorName, visibilities, null)
                 .stream().map(issue -> modelMapper.map(issue, IssueGetDto.class))
                 .collect(Collectors.toList());
     }

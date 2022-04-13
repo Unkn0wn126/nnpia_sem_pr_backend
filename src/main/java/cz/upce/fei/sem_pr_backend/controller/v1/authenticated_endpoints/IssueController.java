@@ -1,11 +1,10 @@
-package cz.upce.fei.sem_pr_backend.controller;
+package cz.upce.fei.sem_pr_backend.controller.v1.authenticated_endpoints;
 
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueCreateDto;
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueGetDto;
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueUpdateDto;
 import cz.upce.fei.sem_pr_backend.service.IssueService;
 import org.springframework.web.bind.annotation.*;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -22,18 +21,18 @@ public class IssueController {
     }
 
     @GetMapping("/")
-    public List<IssueGetDto> getAllIssues(){
-        return issueService.getAllIssues();
+    public List<IssueGetDto> getAllIssues(Principal principal){
+        return issueService.getAllAccessibleIssues(principal);
     }
 
     @GetMapping("/{id}")
-    public IssueGetDto getIssueById(@PathVariable Long id){
-        return issueService.getIssueById(id);
+    public IssueGetDto getIssueById(Principal principal, @PathVariable Long id){
+        return issueService.getIssueById(principal, id);
     }
 
     @GetMapping("/user/{username}")
-    public List<IssueGetDto> getIssuesByAuthorUsername(@PathVariable String username){
-        return issueService.getIssueByAuthorName(username);
+    public List<IssueGetDto> getIssuesByAuthorUsername(Principal principal, @PathVariable String username){
+        return issueService.getIssuesByAuthorName(principal, username);
     }
 
     @DeleteMapping("/delete/{id}")

@@ -1,4 +1,4 @@
-package cz.upce.fei.sem_pr_backend.controller;
+package cz.upce.fei.sem_pr_backend.controller.v1.public_endpoints;
 
 import cz.upce.fei.sem_pr_backend.config.JwtTokenUtil;
 import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserCreateDto;

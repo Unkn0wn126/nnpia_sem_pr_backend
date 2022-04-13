@@ -1,4 +1,4 @@
-package cz.upce.fei.sem_pr_backend.controller;
+package cz.upce.fei.sem_pr_backend.controller.v1.authenticated_endpoints;
 
 import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserGetDto;
 import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserUpdateDto;

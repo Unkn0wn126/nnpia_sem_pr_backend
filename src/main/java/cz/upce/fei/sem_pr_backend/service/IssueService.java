@@ -9,6 +9,7 @@ import cz.upce.fei.sem_pr_backend.dto.issue.IssueCreateDto;
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueGetDto;
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueUpdateDto;
 
+import java.security.Principal;
 import java.util.List;
 
 public interface IssueService {
@@ -17,9 +18,13 @@ public interface IssueService {
     void updateIssue(String author, Long id, IssueUpdateDto issueUpdateDto);
     void deleteIssue(String author, Long id);
 
-    IssueGetDto getIssueById(Long id);
+    IssueGetDto getIssueById(Principal principal, Long id);
+    IssueGetDto getPublicIssueById(Long id);
     List<IssueGetDto> getAllIssues();
-    List<IssueGetDto> getIssueByAuthorName(String authorName);
+    List<IssueGetDto> getAllAccessibleIssues(Principal principal);
+    List<IssueGetDto> getAllPublicIssues();
+    List<IssueGetDto> getIssuesByAuthorName(Principal principal, String authorName);
+    List<IssueGetDto> getPublicIssuesByAuthorName(String authorName);
 
     CommentGetDto getCommentById(Long id);
     List<CommentGetDto> getAllComments();
