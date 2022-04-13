@@ -42,12 +42,12 @@ public class IssueController {
     }
 
     @PutMapping("/update/{id}")
-    public void updateIssueById(Principal principal, @RequestBody @Valid IssueUpdateDto issueUpdateDto, @PathVariable Long id){
+    public void updateIssueById(Principal principal, @Valid @RequestBody IssueUpdateDto issueUpdateDto, @PathVariable Long id){
         issueService.updateIssue(principal, id, issueUpdateDto);
     }
 
     @PostMapping("/create")
-    public void postIssue(Principal principal, @RequestBody @Valid IssueCreateDto issueCreateDto){
+    public void postIssue(Principal principal, @Valid @RequestBody IssueCreateDto issueCreateDto){
         issueService.createIssue(principal, issueCreateDto);
     }
 }

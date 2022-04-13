@@ -1,14 +1,18 @@
 package cz.upce.fei.sem_pr_backend.controller.v1.public_endpoints;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import cz.upce.fei.sem_pr_backend.config.JwtTokenUtil;
 import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserCreateDto;
+import cz.upce.fei.sem_pr_backend.dto.authentication.JwtRequest;
 import cz.upce.fei.sem_pr_backend.dto.profile.ProfileCreateDto;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -23,7 +27,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 class AuthenticationControllerTest {
 
     public static final String API_1_0 = "/api/v1";
-    public static final String API_1_0_USERS = API_1_0 + "/users";
     public static final String API_1_0_LOGIN = API_1_0 + "/login";
     public static final String API_1_0_REGISTER = API_1_0 + "/register";
 
@@ -34,7 +37,7 @@ class AuthenticationControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    void postUser_whenUserIsValid_receiveOk() throws Exception {
+    void register_whenUserIsValid_receiveOk() throws Exception {
         ApplicationUserCreateDto userCreateDto = new ApplicationUserCreateDto();
         userCreateDto.setUsername("user");
         userCreateDto.setPassword("P4ssw0rd$");
@@ -53,7 +56,7 @@ class AuthenticationControllerTest {
 
 
     @Test
-    void postUser_whenUserHasInvalidPassword_receiveBadRequest() throws Exception {
+    void register_whenUserHasInvalidPassword_receiveBadRequest() throws Exception {
         ApplicationUserCreateDto userCreateDto = new ApplicationUserCreateDto();
         userCreateDto.setUsername("user");
         userCreateDto.setPassword("password");

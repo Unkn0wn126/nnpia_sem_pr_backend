@@ -7,6 +7,7 @@ import cz.upce.fei.sem_pr_backend.service.IssueService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 
@@ -46,12 +47,12 @@ public class AdminCommentController {
     }
 
     @PutMapping("/update/{id}")
-    public void updateCommentById(Principal principal, @PathVariable Long id, @RequestBody CommentUpdateDto commentUpdateDto){
+    public void updateCommentById(Principal principal, @PathVariable Long id, @Valid @RequestBody CommentUpdateDto commentUpdateDto){
         issueService.updateComment(principal, id, commentUpdateDto);
     }
 
     @PostMapping("/create/{id}")
-    public void postCommentToIssue(Principal principal, @PathVariable Long id, @RequestBody CommentCreateDto commentCreateDto){
+    public void postCommentToIssue(Principal principal, @PathVariable Long id, @Valid @RequestBody CommentCreateDto commentCreateDto){
         issueService.createCommentToIssue(principal, id, commentCreateDto);
     }
 }

@@ -5,8 +5,8 @@ import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserUpdateDto;
 import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserUpdatePasswordDto;
 import cz.upce.fei.sem_pr_backend.service.ApplicationUserService;
 import org.springframework.web.bind.annotation.*;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 
@@ -41,12 +41,12 @@ public class UserController {
     }
 
     @PutMapping("/update/{id}")
-    public void updateUserById(Principal principal, @PathVariable Long id, @RequestBody ApplicationUserUpdateDto userUpdateDto){
+    public void updateUserById(Principal principal, @PathVariable Long id, @Valid @RequestBody ApplicationUserUpdateDto userUpdateDto){
         userService.updateUserInfo(principal, id, userUpdateDto);
     }
 
     @PutMapping("/update/password/{id}")
-    public void updateUserPasswordById(Principal principal, @PathVariable Long id, @RequestBody ApplicationUserUpdatePasswordDto userUpdateDto){
+    public void updateUserPasswordById(Principal principal, @PathVariable Long id, @Valid @RequestBody ApplicationUserUpdatePasswordDto userUpdateDto){
         userService.updateUserPassword(principal, id, userUpdateDto);
     }
 }
