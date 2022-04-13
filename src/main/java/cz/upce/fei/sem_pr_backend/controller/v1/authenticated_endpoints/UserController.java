@@ -22,7 +22,7 @@ public class UserController {
 
     @GetMapping("/")
     public List<ApplicationUserGetDto> getUsers(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize){
-        return userService.getUsers(pageNumber, pageSize);
+        return userService.getAllUsers(pageNumber, pageSize);
     }
 
     @GetMapping("/id/{id}")

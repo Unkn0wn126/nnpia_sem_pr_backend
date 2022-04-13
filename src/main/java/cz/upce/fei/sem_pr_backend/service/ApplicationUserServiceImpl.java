@@ -92,6 +92,11 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
     }
 
     @Override
+    public List<Role> getAllRoles() {
+        return roleRepository.findAll();
+    }
+
+    @Override
     public Role saveRole(Role role) {
         return roleRepository.save(role);
     }
@@ -178,7 +183,7 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
     }
 
     @Override
-    public List<ApplicationUserGetDto> getUsers(Integer pageNumber, Integer pageSize) {
+    public List<ApplicationUserGetDto> getAllUsers(Integer pageNumber, Integer pageSize) {
         return userRepository.findAll(PageRequest.of(pageNumber, pageSize))
                 .stream().map(applicationUser -> modelMapper.map(applicationUser, ApplicationUserGetDto.class))
                 .collect(Collectors.toList());

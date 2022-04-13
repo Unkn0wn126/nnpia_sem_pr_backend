@@ -50,22 +50,21 @@ public class SemPrBackendApplication {
     }
 
     @Bean
-    @Profile("default")
+    //@Profile("default")
     CommandLineRunner run(ApplicationUserService userService, @Qualifier("issueServiceAdminImpl") IssueService issueService){
         return args -> {
-            userService.saveRole(new Role(null, RoleType.ROLE_ADMIN, new HashSet<>()));
-            userService.saveRole(new Role(null, RoleType.ROLE_USER, new HashSet<>()));
+            if (userService.getAllRoles().size() == 0){
+                userService.saveRole(new Role(null, RoleType.ROLE_ADMIN, new HashSet<>()));
+                userService.saveRole(new Role(null, RoleType.ROLE_USER, new HashSet<>()));
+            }
 
-            userService.saveUser(new ApplicationUserCreateDto("admin", "admin@root.com", "P4ssw0rd$", new ProfileCreateDto("Root", null)));
-            userService.saveUser(new ApplicationUserCreateDto("rando", "email@example.com", "P4ssw0rd$", new ProfileCreateDto("Rando", null)));
+            if (userService.getAllUsers(0, 1).size() == 0){
+                userService.saveUser(new ApplicationUserCreateDto("admin", "admin@root.com", "P4ssw0rd$", new ProfileCreateDto("Root", null)));
 
-            userService.addRoleToUser("admin", RoleType.ROLE_ADMIN);
-            userService.addRoleToUser("rando", RoleType.ROLE_USER);
+                userService.addRoleToUser("admin", RoleType.ROLE_USER);
+                userService.addRoleToUser("admin", RoleType.ROLE_ADMIN);
+            }
 
-//            issueService.createIssue("admin", new IssueCreateDto("It's not fucking working", "Title", IssueSeverity.LOW, IssueVisibility.PUBLIC, null));
-//            issueService.createIssue("rando", new IssueCreateDto("It's still not fucking working", "Title...", IssueSeverity.LOW, IssueVisibility.PUBLIC, null));
-//
-//            issueService.createCommentToIssue("admin", 2L, new CommentCreateDto("Get over it"));
         };
     }
 }

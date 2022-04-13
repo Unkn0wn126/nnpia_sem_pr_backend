@@ -14,6 +14,7 @@ import java.util.List;
 public interface ApplicationUserService {
     ApplicationUser createNormalUser(ApplicationUserCreateDto userDto);
     ApplicationUser saveUser(ApplicationUserCreateDto userDto);
+    List<Role> getAllRoles();
     Role saveRole(Role role);
     void addRoleToUser(String username, RoleType roleName);
     ApplicationUserGetDto getUserByUsername(String username);
@@ -21,6 +22,6 @@ public interface ApplicationUserService {
     void deleteUser(Principal principal, Long id);
     void updateUserInfo(Principal principal, Long id, ApplicationUserUpdateDto userUpdateDto);
     void updateUserPassword(Principal principal, Long id, ApplicationUserUpdatePasswordDto userUpdatePasswordDto);
-    List<ApplicationUserGetDto> getUsers(Integer pageNumber, Integer pageSize);
+    List<ApplicationUserGetDto> getAllUsers(Integer pageNumber, Integer pageSize);
     List<ApplicationUserGetDto> getActiveUsers(Integer pageNumber, Integer pageSize);
 }

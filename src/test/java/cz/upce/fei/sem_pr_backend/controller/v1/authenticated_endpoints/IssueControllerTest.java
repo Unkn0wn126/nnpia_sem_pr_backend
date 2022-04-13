@@ -80,16 +80,6 @@ public class IssueControllerTest {
 
     @BeforeEach
     public void initIssues(){
-        userService.saveRole(new Role(null, RoleType.ROLE_ADMIN, new HashSet<>()));
-        userService.saveRole(new Role(null, RoleType.ROLE_USER, new HashSet<>()));
-
-        ApplicationUserCreateDto adminDto =
-                new ApplicationUserCreateDto("admin", "admin@root.com", "P4ssw0rd$",
-                        new ProfileCreateDto("Admin", null));
-        userService.saveUser(adminDto);
-        userService.addRoleToUser("admin", RoleType.ROLE_USER);
-        userService.addRoleToUser("admin", RoleType.ROLE_ADMIN);
-
         ApplicationUserCreateDto userCreateDto =
                 new ApplicationUserCreateDto("rando", "email@example.com", "P4ssw0rd$",
                         new ProfileCreateDto("Rando", null));
