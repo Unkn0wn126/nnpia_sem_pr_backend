@@ -15,6 +15,7 @@ import cz.upce.fei.sem_pr_backend.repository.ApplicationUserRepository;
 import cz.upce.fei.sem_pr_backend.repository.ProfileRepository;
 import cz.upce.fei.sem_pr_backend.repository.RoleRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -159,16 +160,18 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No such user with id: " + id));
         if (authorizationUtil.isAdmin(username) || user.getUsername().equals(username)){
-            // TODO check if old password is correct
-            /*String hash = passwordEncoder.encode(userUpdatePasswordDto.getOldPassword());
-            if (!hash.equals(user.getPassword())){
-                throw new RuntimeException("Passwords don't match!");
-            }*/
+            if (!doPasswordsMatch(userUpdatePasswordDto.getOldPassword(), user.getPassword()))
+                throw new BadCredentialsException("Passwords don't match");
+
             user.setPassword(passwordEncoder.encode(userUpdatePasswordDto.getNewPassword()));
             userRepository.save(user);
         }else{
             throw new UnauthorizedException("Unauthorized!");
         }
+    }
+
+    private boolean doPasswordsMatch(String rawPassword, String encodedPassword){
+        return passwordEncoder.matches(rawPassword, encodedPassword);
     }
 
     @Override
