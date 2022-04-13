@@ -20,5 +20,6 @@ public interface ApplicationUserService {
     void deleteUser(String username, Long id);
     void updateUserInfo(String username, Long id, ApplicationUserUpdateDto userUpdateDto);
     void updateUserPassword(String username, Long id, ApplicationUserUpdatePasswordDto userUpdatePasswordDto);
-    List<ApplicationUserGetDto> getUsers();
+    List<ApplicationUserGetDto> getUsers(Integer pageNumber, Integer pageSize);
+    List<ApplicationUserGetDto> getActiveUsers(Integer pageNumber, Integer pageSize);
 }

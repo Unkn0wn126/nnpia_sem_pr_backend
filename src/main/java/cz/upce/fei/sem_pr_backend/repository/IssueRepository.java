@@ -2,6 +2,8 @@ package cz.upce.fei.sem_pr_backend.repository;
 
 import cz.upce.fei.sem_pr_backend.domain.Issue;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueVisibility;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,10 +22,10 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
             "where (i.author.username = :authorName and i.visibility in (:visibility)) " +
             "or (i.author.username = :authorName and i.author.username = :accessorName) " +
             "order by i.published")
-    List<Issue> findAllByAuthor(@Param("authorName") String authorname, @Param("visibility") List<IssueVisibility> issueVisibility, @Param("accessorName") String accessorName);
+    Page<Issue> findAllByAuthor(@Param("authorName") String authorname, @Param("visibility") List<IssueVisibility> issueVisibility, @Param("accessorName") String accessorName, Pageable pageable);
 
     @Query(value = "SELECT i from Issue i " +
             "where i.visibility in (:visibility) or i.author.username = :accessorName " +
             "order by i.published")
-    List<Issue> findAllByVisibility(@Param("visibility") List<IssueVisibility> issueVisibility, @Param("accessorName") String accessorName);
+    Page<Issue> findAllByVisibility(@Param("visibility") List<IssueVisibility> issueVisibility, @Param("accessorName") String accessorName, Pageable pageable);
 }

@@ -20,16 +20,16 @@ public interface IssueService {
 
     IssueGetDto getIssueById(Principal principal, Long id);
     IssueGetDto getPublicIssueById(Long id);
-    List<IssueGetDto> getAllIssues();
-    List<IssueGetDto> getAllAccessibleIssues(Principal principal);
-    List<IssueGetDto> getAllPublicIssues();
-    List<IssueGetDto> getIssuesByAuthorName(Principal principal, String authorName);
-    List<IssueGetDto> getPublicIssuesByAuthorName(String authorName);
+    List<IssueGetDto> getAllIssues(Integer pageNumber, Integer PageSize);
+    List<IssueGetDto> getAllAccessibleIssues(Principal principal, Integer pageNumber, Integer PageSize);
+    List<IssueGetDto> getAllPublicIssues(Integer pageNumber, Integer PageSize);
+    List<IssueGetDto> getIssuesByAuthorName(Principal principal, String authorName, Integer pageNumber, Integer PageSize);
+    List<IssueGetDto> getPublicIssuesByAuthorName(String authorName, Integer pageNumber, Integer PageSize);
 
     CommentGetDto getCommentById(Long id);
-    List<CommentGetDto> getAllComments();
-    List<CommentGetDto> getCommentsByAuthor(String authorName);
-    List<CommentGetDto> getIssueComments(Long id);
+    List<CommentGetDto> getAllComments(Integer pageNumber, Integer PageSize);
+    List<CommentGetDto> getCommentsByAuthor(String authorName, Integer pageNumber, Integer PageSize);
+    List<CommentGetDto> getIssueComments(Long id, Integer pageNumber, Integer PageSize);
     Comment createCommentToIssue(String authorName, Long issueId, CommentCreateDto commentCreateDto);
     void updateComment(String author, Long id, CommentUpdateDto commentUpdateDto);
     void deleteComment(String author, Long id);

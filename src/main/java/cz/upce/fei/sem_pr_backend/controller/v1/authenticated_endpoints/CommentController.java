@@ -22,8 +22,8 @@ public class CommentController {
     }
 
     @GetMapping("/")
-    public List<CommentGetDto> getComments(){
-        return issueService.getAllComments();
+    public List<CommentGetDto> getComments(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize){
+        return issueService.getAllComments(pageNumber, pageSize);
     }
 
     @GetMapping("/{id}")
@@ -32,13 +32,13 @@ public class CommentController {
     }
 
     @GetMapping("/issue/{id}")
-    public List<CommentGetDto> getCommentsByIssueId(@PathVariable Long id){
-        return issueService.getIssueComments(id);
+    public List<CommentGetDto> getCommentsByIssueId(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize, @PathVariable Long id){
+        return issueService.getIssueComments(id, pageNumber, pageSize);
     }
 
     @GetMapping("/user/{username}")
-    public List<CommentGetDto> getCommentsByAuthorUsername(@PathVariable String username){
-        return issueService.getCommentsByAuthor(username);
+    public List<CommentGetDto> getCommentsByAuthorUsername(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize, @PathVariable String username){
+        return issueService.getCommentsByAuthor(username, pageNumber, pageSize);
     }
 
     @DeleteMapping("/delete/{id}")

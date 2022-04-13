@@ -21,8 +21,8 @@ public class IssueController {
     }
 
     @GetMapping("/")
-    public List<IssueGetDto> getAllIssues(Principal principal){
-        return issueService.getAllAccessibleIssues(principal);
+    public List<IssueGetDto> getAllIssues(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize, Principal principal){
+        return issueService.getAllAccessibleIssues(principal, pageNumber, pageSize);
     }
 
     @GetMapping("/{id}")
@@ -31,8 +31,8 @@ public class IssueController {
     }
 
     @GetMapping("/user/{username}")
-    public List<IssueGetDto> getIssuesByAuthorUsername(Principal principal, @PathVariable String username){
-        return issueService.getIssuesByAuthorName(principal, username);
+    public List<IssueGetDto> getIssuesByAuthorUsername(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize, Principal principal, @PathVariable String username){
+        return issueService.getIssuesByAuthorName(principal, username, pageNumber, pageSize);
     }
 
     @DeleteMapping("/delete/{id}")

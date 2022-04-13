@@ -2,10 +2,7 @@ package cz.upce.fei.sem_pr_backend.controller.v1.public_endpoints;
 
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueGetDto;
 import cz.upce.fei.sem_pr_backend.service.IssueService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,8 +17,8 @@ public class PublicIssueController {
     }
 
     @GetMapping("/")
-    public List<IssueGetDto> getAllIssues(){
-        return issueService.getAllPublicIssues();
+    public List<IssueGetDto> getAllIssues(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize){
+        return issueService.getAllPublicIssues(pageNumber, pageSize);
     }
 
     @GetMapping("/{id}")
@@ -30,7 +27,7 @@ public class PublicIssueController {
     }
 
     @GetMapping("/user/{username}")
-    public List<IssueGetDto> getIssuesByAuthorUsername(@PathVariable String username){
-        return issueService.getPublicIssuesByAuthorName(username);
+    public List<IssueGetDto> getIssuesByAuthorUsername(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize, @PathVariable String username){
+        return issueService.getPublicIssuesByAuthorName(username, pageNumber, pageSize);
     }
 }

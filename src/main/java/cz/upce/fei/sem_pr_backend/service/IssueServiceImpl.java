@@ -18,6 +18,7 @@ import cz.upce.fei.sem_pr_backend.repository.ApplicationUserRepository;
 import cz.upce.fei.sem_pr_backend.repository.CommentRepository;
 import cz.upce.fei.sem_pr_backend.repository.IssueRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -120,44 +121,44 @@ public class IssueServiceImpl implements IssueService{
     }
 
     @Override
-    public List<IssueGetDto> getAllIssues() {
+    public List<IssueGetDto> getAllIssues(Integer pageNumber, Integer PageSize) {
         return issueRepository.findAll()
                 .stream().map(issue -> modelMapper.map(issue, IssueGetDto.class))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<IssueGetDto> getAllAccessibleIssues(Principal principal) {
+    public List<IssueGetDto> getAllAccessibleIssues(Principal principal, Integer pageNumber, Integer pageSize) {
         List<IssueVisibility> visibilities = new ArrayList<>();
         visibilities.add(IssueVisibility.PUBLIC);
         visibilities.add(IssueVisibility.INTERNAL);
-        return issueRepository.findAllByVisibility(visibilities, principal.getName()) // TODO filtering based on visibility
+        return issueRepository.findAllByVisibility(visibilities, principal.getName(), PageRequest.of(pageNumber, pageSize)) // TODO filtering based on visibility
                 .stream().map(issue -> modelMapper.map(issue, IssueGetDto.class))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<IssueGetDto> getAllPublicIssues() {
-        return issueRepository.findAllByVisibility(new ArrayList<>(Arrays.asList(IssueVisibility.PUBLIC)), null)
+    public List<IssueGetDto> getAllPublicIssues(Integer pageNumber, Integer pageSize) {
+        return issueRepository.findAllByVisibility(new ArrayList<>(Arrays.asList(IssueVisibility.PUBLIC)), null, PageRequest.of(pageNumber, pageSize))
                 .stream().map(issue -> modelMapper.map(issue, IssueGetDto.class))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<IssueGetDto> getIssuesByAuthorName(Principal principal, String authorName) {
+    public List<IssueGetDto> getIssuesByAuthorName(Principal principal, String authorName, Integer pageNumber, Integer pageSize) {
         List<IssueVisibility> visibilities = new ArrayList<>();
         visibilities.add(IssueVisibility.PUBLIC);
         visibilities.add(IssueVisibility.INTERNAL);
-        return issueRepository.findAllByAuthor(authorName, visibilities, principal.getName())
+        return issueRepository.findAllByAuthor(authorName, visibilities, principal.getName(), PageRequest.of(pageNumber, pageSize))
                 .stream().map(issue -> modelMapper.map(issue, IssueGetDto.class))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<IssueGetDto> getPublicIssuesByAuthorName(String authorName) {
+    public List<IssueGetDto> getPublicIssuesByAuthorName(String authorName, Integer pageNumber, Integer pageSize) {
         List<IssueVisibility> visibilities = new ArrayList<>();
         visibilities.add(IssueVisibility.PUBLIC);
-        return issueRepository.findAllByAuthor(authorName, visibilities, null)
+        return issueRepository.findAllByAuthor(authorName, visibilities, null, PageRequest.of(pageNumber, pageSize))
                 .stream().map(issue -> modelMapper.map(issue, IssueGetDto.class))
                 .collect(Collectors.toList());
     }
@@ -170,22 +171,22 @@ public class IssueServiceImpl implements IssueService{
     }
 
     @Override
-    public List<CommentGetDto> getAllComments() {
-        return commentRepository.findAll()
+    public List<CommentGetDto> getAllComments(Integer pageNumber, Integer pageSize) {
+        return commentRepository.findAll(PageRequest.of(pageNumber, pageSize))
                 .stream().map(comment -> modelMapper.map(comment, CommentGetDto.class))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<CommentGetDto> getCommentsByAuthor(String authorName) {
-        return commentRepository.findAllByAuthor(authorName)// TODO filtering based on visibility
+    public List<CommentGetDto> getCommentsByAuthor(String authorName, Integer pageNumber, Integer pageSize) {
+        return commentRepository.findAllByAuthor(authorName, PageRequest.of(pageNumber, pageSize))// TODO filtering based on visibility?
                 .stream().map(comment -> modelMapper.map(comment, CommentGetDto.class))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<CommentGetDto> getIssueComments(Long id) {
-        return commentRepository.findAllByIssueId(id) // TODO filtering based on visibility
+    public List<CommentGetDto> getIssueComments(Long id, Integer pageNumber, Integer pageSize) {
+        return commentRepository.findAllByIssueId(id, PageRequest.of(pageNumber, pageSize)) // TODO filtering based on visibility?
                 .stream().map(comment -> modelMapper.map(comment, CommentGetDto.class))
                 .collect(Collectors.toList());
     }

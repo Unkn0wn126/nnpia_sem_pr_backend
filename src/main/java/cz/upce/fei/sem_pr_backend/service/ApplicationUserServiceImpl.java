@@ -15,6 +15,7 @@ import cz.upce.fei.sem_pr_backend.repository.ApplicationUserRepository;
 import cz.upce.fei.sem_pr_backend.repository.ProfileRepository;
 import cz.upce.fei.sem_pr_backend.repository.RoleRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -175,8 +176,15 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
     }
 
     @Override
-    public List<ApplicationUserGetDto> getUsers() {
-        return userRepository.findAll()
+    public List<ApplicationUserGetDto> getUsers(Integer pageNumber, Integer pageSize) {
+        return userRepository.findAll(PageRequest.of(pageNumber, pageSize))
+                .stream().map(applicationUser -> modelMapper.map(applicationUser, ApplicationUserGetDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ApplicationUserGetDto> getActiveUsers(Integer pageNumber, Integer pageSize) {
+        return userRepository.findAllByState(UserState.ACTIVE, PageRequest.of(pageNumber, pageSize))
                 .stream().map(applicationUser -> modelMapper.map(applicationUser, ApplicationUserGetDto.class))
                 .collect(Collectors.toList());
     }
