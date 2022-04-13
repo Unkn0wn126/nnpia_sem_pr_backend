@@ -8,6 +8,7 @@ import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserGetDto;
 import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserUpdateDto;
 import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserUpdatePasswordDto;
 
+import java.security.Principal;
 import java.util.List;
 
 public interface ApplicationUserService {
@@ -17,9 +18,9 @@ public interface ApplicationUserService {
     void addRoleToUser(String username, RoleType roleName);
     ApplicationUserGetDto getUserByUsername(String username);
     ApplicationUserGetDto getUserById(Long id);
-    void deleteUser(String username, Long id);
-    void updateUserInfo(String username, Long id, ApplicationUserUpdateDto userUpdateDto);
-    void updateUserPassword(String username, Long id, ApplicationUserUpdatePasswordDto userUpdatePasswordDto);
+    void deleteUser(Principal principal, Long id);
+    void updateUserInfo(Principal principal, Long id, ApplicationUserUpdateDto userUpdateDto);
+    void updateUserPassword(Principal principal, Long id, ApplicationUserUpdatePasswordDto userUpdatePasswordDto);
     List<ApplicationUserGetDto> getUsers(Integer pageNumber, Integer pageSize);
     List<ApplicationUserGetDto> getActiveUsers(Integer pageNumber, Integer pageSize);
 }

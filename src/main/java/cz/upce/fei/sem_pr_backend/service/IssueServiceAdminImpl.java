@@ -24,12 +24,11 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class IssueServiceImpl implements IssueService{
+public class IssueServiceAdminImpl implements IssueService{
 
     private final IssueRepository issueRepository;
     private final ApplicationUserRepository userRepository;
@@ -37,11 +36,11 @@ public class IssueServiceImpl implements IssueService{
     private final ModelMapper modelMapper;
     private final AuthorizationUtil authorizationUtil;
 
-    public IssueServiceImpl(IssueRepository issueRepository,
-                            ApplicationUserRepository userRepository,
-                            CommentRepository commentRepository,
-                            ModelMapper modelMapper,
-                            AuthorizationUtil authorizationUtil) {
+    public IssueServiceAdminImpl(IssueRepository issueRepository,
+                                  ApplicationUserRepository userRepository,
+                                  CommentRepository commentRepository,
+                                  ModelMapper modelMapper,
+                                  AuthorizationUtil authorizationUtil) {
         this.issueRepository = issueRepository;
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
@@ -66,56 +65,34 @@ public class IssueServiceImpl implements IssueService{
         Issue issue = issueRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No such issue with id: " + id));
-        if (authorizationUtil.canAlterResource(principal, id)){
-            issue.setHeader(issueUpdateDto.getHeader());
-            issue.setContent(issueUpdateDto.getContent());
-            issue.setSeverity(issueUpdateDto.getSeverity());
-            issue.setVisibility(issueUpdateDto.getVisibility());
-            issue.setCompletionState(issueUpdateDto.getCompletionState());
-            issue.setDueDate(issueUpdateDto.getDueDate());
-            issue.setCompletionState(issueUpdateDto.getCompletionState());
+        issue.setHeader(issueUpdateDto.getHeader());
+        issue.setContent(issueUpdateDto.getContent());
+        issue.setSeverity(issueUpdateDto.getSeverity());
+        issue.setVisibility(issueUpdateDto.getVisibility());
+        issue.setCompletionState(issueUpdateDto.getCompletionState());
+        issue.setDueDate(issueUpdateDto.getDueDate());
+        issue.setCompletionState(issueUpdateDto.getCompletionState());
 
-            issueRepository.save(issue);
-        }else{
-            throw new UnauthorizedException("Unauthorized!");
-        }
+        issueRepository.save(issue);
     }
 
     @Override
     public void deleteIssue(Principal principal, Long id) {
-        Issue issue = issueRepository
-                .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("No such issue with id: " + id));
-        if (authorizationUtil.canAlterResource(principal, id)){
-            issueRepository.deleteById(id);
-        }else{
-            throw new UnauthorizedException("Unauthorized!"); // TODO better exception
-        }
+        issueRepository.deleteById(id);
     }
 
     @Override
     public IssueGetDto getIssueById(Principal principal, Long id) {
         Issue issue = issueRepository
-                .findByIdAndVisibility(id, getAuthenticadedVisibilities(), principal.getName())
+                .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No such issue with id: " + id));
 
         return modelMapper.map(issue, IssueGetDto.class);
     }
 
-    private List<IssueVisibility> getAuthenticadedVisibilities(){
-        List<IssueVisibility> visibilities = new ArrayList<>();
-        visibilities.add(IssueVisibility.PUBLIC);
-        visibilities.add(IssueVisibility.INTERNAL);
-
-        return visibilities;
-    }
-
     @Override
     public List<IssueGetDto> getAllIssues(Principal principal, Integer pageNumber, Integer pageSize) {
-        List<IssueVisibility> visibilities = new ArrayList<>();
-        visibilities.add(IssueVisibility.PUBLIC);
-        visibilities.add(IssueVisibility.INTERNAL);
-        return issueRepository.findAllByVisibility(visibilities, principal.getName(), PageRequest.of(pageNumber, pageSize))
+        return issueRepository.findAll(PageRequest.of(pageNumber, pageSize))
                 .stream().map(issue -> modelMapper.map(issue, IssueGetDto.class))
                 .collect(Collectors.toList());
     }
@@ -125,6 +102,7 @@ public class IssueServiceImpl implements IssueService{
         List<IssueVisibility> visibilities = new ArrayList<>();
         visibilities.add(IssueVisibility.PUBLIC);
         visibilities.add(IssueVisibility.INTERNAL);
+        visibilities.add(IssueVisibility.PRIVATE);
         return issueRepository.findAllByAuthor(authorName, visibilities, principal.getName(), PageRequest.of(pageNumber, pageSize))
                 .stream().map(issue -> modelMapper.map(issue, IssueGetDto.class))
                 .collect(Collectors.toList());
@@ -160,7 +138,6 @@ public class IssueServiceImpl implements IssueService{
 
     @Override
     public Comment createCommentToIssue(Principal principal, Long issueId, CommentCreateDto commentCreateDto) {
-        // TODO filtering based on visibility
         Comment comment = modelMapper.map(commentCreateDto, Comment.class);
         ApplicationUser author = userRepository
                 .findByUsername(principal.getName())
@@ -177,24 +154,13 @@ public class IssueServiceImpl implements IssueService{
     public void updateComment(Principal principal, Long id, CommentUpdateDto commentUpdateDto) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No such issue with id: " + id));
-        if (authorizationUtil.canAlterResource(principal, id)){
-            comment.setContent(commentUpdateDto.getContent());
+        comment.setContent(commentUpdateDto.getContent());
 
-            commentRepository.save(comment);
-        }else{
-            throw new UnauthorizedException("Unauthorized!");
-        }
+        commentRepository.save(comment);
     }
 
     @Override
     public void deleteComment(Principal principal, Long id) {
-        Comment comment = commentRepository
-                .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("No such comment with id: " + id));
-        if (authorizationUtil.canAlterResource(principal, comment.getId())){
-            commentRepository.deleteById(id);
-        }else{
-            throw new UnauthorizedException("Unauthorized!");
-        }
+        commentRepository.deleteById(id);
     }
 }

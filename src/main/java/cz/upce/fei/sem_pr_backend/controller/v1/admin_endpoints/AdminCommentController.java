@@ -1,11 +1,9 @@
-package cz.upce.fei.sem_pr_backend.controller.v1.authenticated_endpoints;
+package cz.upce.fei.sem_pr_backend.controller.v1.admin_endpoints;
 
-import cz.upce.fei.sem_pr_backend.domain.Comment;
 import cz.upce.fei.sem_pr_backend.dto.comment.CommentCreateDto;
 import cz.upce.fei.sem_pr_backend.dto.comment.CommentGetDto;
 import cz.upce.fei.sem_pr_backend.dto.comment.CommentUpdateDto;
 import cz.upce.fei.sem_pr_backend.service.IssueService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,12 +11,12 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/comments")
-public class CommentController {
+@RequestMapping("api/v1/admin/comments")
+public class AdminCommentController {
 
     private final IssueService issueService;
 
-    public CommentController(@Qualifier("issueServiceImpl") IssueService issueService) {
+    public AdminCommentController(@Qualifier("issueServiceAdminImpl") IssueService issueService) {
         this.issueService = issueService;
     }
 

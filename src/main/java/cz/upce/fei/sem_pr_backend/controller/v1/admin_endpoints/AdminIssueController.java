@@ -1,4 +1,4 @@
-package cz.upce.fei.sem_pr_backend.controller.v1.authenticated_endpoints;
+package cz.upce.fei.sem_pr_backend.controller.v1.admin_endpoints;
 
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueCreateDto;
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueGetDto;
@@ -12,17 +12,17 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/issues")
-public class IssueController {
+@RequestMapping("api/v1/admin/issues")
+public class AdminIssueController {
 
     private final IssueService issueService;
 
-    public IssueController(@Qualifier("issueServiceImpl") IssueService issueService) {
+    public AdminIssueController(@Qualifier("issueServiceAdminImpl") IssueService issueService) {
         this.issueService = issueService;
     }
 
     @GetMapping("/")
-    public List<IssueGetDto> getAllIssues(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize, Principal principal){
+    public List<IssueGetDto> getAllIssues(Principal principal, @RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize){
         return issueService.getAllIssues(principal, pageNumber, pageSize);
     }
 

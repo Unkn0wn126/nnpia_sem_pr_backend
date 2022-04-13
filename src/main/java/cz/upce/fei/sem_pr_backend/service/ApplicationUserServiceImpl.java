@@ -26,6 +26,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -122,11 +123,11 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
     }
 
     @Override
-    public void deleteUser(String username, Long id) {
+    public void deleteUser(Principal principal, Long id) {
         ApplicationUser user = userRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No such user with id: " + id));
-        if (authorizationUtil.isAdmin(username) || user.getUsername().equals(username)){
+        if (authorizationUtil.canAlterResource(principal, id)){
             userRepository.deleteById(id);
         }else{
             throw new UnauthorizedException("Unauthorized!");
@@ -134,14 +135,14 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
     }
 
     @Override
-    public void updateUserInfo(String username, Long id, ApplicationUserUpdateDto userUpdateDto) {
+    public void updateUserInfo(Principal principal, Long id, ApplicationUserUpdateDto userUpdateDto) {
         ApplicationUser user = userRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No such user with id: " + id));
         Profile profile = profileRepository
                 .findById(user.getProfile().getId())
                 .orElseThrow(() -> new RuntimeException("No such profile with id: " + id));
-        if (authorizationUtil.isAdmin(username) || user.getUsername().equals(username)){
+        if (authorizationUtil.canAlterResource(principal, id)){
             user.setEmail(userUpdateDto.getEmail());
             ProfileUpdateDto profileUpdateDto = userUpdateDto.getProfile();
             profile.setProfilePicturePath(profileUpdateDto.getProfilePicturePath()); // TODO change to base64 and convert
@@ -156,12 +157,13 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
     }
 
     @Override
-    public void updateUserPassword(String username, Long id, ApplicationUserUpdatePasswordDto userUpdatePasswordDto) {
+    public void updateUserPassword(Principal principal, Long id, ApplicationUserUpdatePasswordDto userUpdatePasswordDto) {
         ApplicationUser user = userRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No such user with id: " + id));
-        if (authorizationUtil.isAdmin(username) || user.getUsername().equals(username)){
-            if (!doPasswordsMatch(userUpdatePasswordDto.getOldPassword(), user.getPassword()))
+        if (authorizationUtil.canAlterResource(principal, id)){
+            if (!doPasswordsMatch(userUpdatePasswordDto.getOldPassword(), user.getPassword()) &&
+                    !authorizationUtil.isAdmin(principal.getName()))
                 throw new BadCredentialsException("Passwords don't match");
 
             user.setPassword(passwordEncoder.encode(userUpdatePasswordDto.getNewPassword()));

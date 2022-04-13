@@ -19,6 +19,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.modelmapper.TypeMap;
 import org.modelmapper.spi.MappingContext;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -50,7 +51,7 @@ public class SemPrBackendApplication {
 
     @Bean
     @Profile("!prod")
-    CommandLineRunner run(ApplicationUserService userService, IssueService issueService){
+    CommandLineRunner run(ApplicationUserService userService, @Qualifier("issueServiceAdminImpl") IssueService issueService){
         return args -> {
             userService.saveRole(new Role(null, RoleType.ROLE_ADMIN, new HashSet<>()));
             userService.saveRole(new Role(null, RoleType.ROLE_USER, new HashSet<>()));
@@ -61,10 +62,10 @@ public class SemPrBackendApplication {
             userService.addRoleToUser("admin", RoleType.ROLE_ADMIN);
             userService.addRoleToUser("rando", RoleType.ROLE_USER);
 
-            issueService.createIssue("admin", new IssueCreateDto("It's not fucking working", "Title", IssueSeverity.LOW, IssueVisibility.PUBLIC, null));
-            issueService.createIssue("rando", new IssueCreateDto("It's still not fucking working", "Title...", IssueSeverity.LOW, IssueVisibility.PUBLIC, null));
-
-            issueService.createCommentToIssue("admin", 2L, new CommentCreateDto("Get over it"));
+//            issueService.createIssue("admin", new IssueCreateDto("It's not fucking working", "Title", IssueSeverity.LOW, IssueVisibility.PUBLIC, null));
+//            issueService.createIssue("rando", new IssueCreateDto("It's still not fucking working", "Title...", IssueSeverity.LOW, IssueVisibility.PUBLIC, null));
+//
+//            issueService.createCommentToIssue("admin", 2L, new CommentCreateDto("Get over it"));
         };
     }
 }
