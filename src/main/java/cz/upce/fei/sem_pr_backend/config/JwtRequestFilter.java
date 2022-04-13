@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
+import cz.upce.fei.sem_pr_backend.exception.ExpiredJWTTokenException;
+import cz.upce.fei.sem_pr_backend.exception.InvalidJwtException;
+import cz.upce.fei.sem_pr_backend.exception.MissingJWTTokenException;
 import cz.upce.fei.sem_pr_backend.service.ApplicationUserService;
 import cz.upce.fei.sem_pr_backend.service.ApplicationUserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,9 +61,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     authorities.add(new SimpleGrantedAuthority(role));
                 });
             } catch (IllegalArgumentException e) {
-                System.out.println("Unable to get JWT Token");
+                throw new MissingJWTTokenException("Unable to get JWT Token");
             } catch (ExpiredJwtException e) {
-                System.out.println("JWT Token has expired");
+                throw new ExpiredJWTTokenException("JWT Token has expired");
+            } catch (Exception e){
+                throw new InvalidJwtException("Invalid JWT token");
             }
         } else {
             logger.warn("JWT Token does not begin with Bearer String");

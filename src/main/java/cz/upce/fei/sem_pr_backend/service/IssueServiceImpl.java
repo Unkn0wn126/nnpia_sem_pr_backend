@@ -11,6 +11,8 @@ import cz.upce.fei.sem_pr_backend.dto.comment.CommentUpdateDto;
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueCreateDto;
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueGetDto;
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueUpdateDto;
+import cz.upce.fei.sem_pr_backend.exception.ResourceNotFoundException;
+import cz.upce.fei.sem_pr_backend.exception.UnauthorizedException;
 import cz.upce.fei.sem_pr_backend.repository.ApplicationUserRepository;
 import cz.upce.fei.sem_pr_backend.repository.CommentRepository;
 import cz.upce.fei.sem_pr_backend.repository.IssueRepository;
@@ -45,7 +47,9 @@ public class IssueServiceImpl implements IssueService{
     @Override
     public Issue createIssue(String authorName, IssueCreateDto issueCreateDto) {
         Issue issue = modelMapper.map(issueCreateDto, Issue.class);
-        ApplicationUser author = userRepository.findByUsername(authorName).orElseThrow(() -> new UsernameNotFoundException("No such user"));
+        ApplicationUser author = userRepository
+                .findByUsername(authorName)
+                .orElseThrow(() -> new UsernameNotFoundException("No such user with name: " + authorName));
         issue.setAuthor(author);
         issue.setCompletionState(IssueCompletionState.TODO);
 
@@ -54,7 +58,9 @@ public class IssueServiceImpl implements IssueService{
 
     @Override
     public void updateIssue(String author, Long id, IssueUpdateDto issueUpdateDto) {
-        Issue issue = issueRepository.findById(id).orElseThrow(() -> new RuntimeException("No such issue")); // TODO better exception
+        Issue issue = issueRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No such issue with id: " + id));
         if (authorizationUtil.isAdmin(author) || issue.getAuthor().getUsername().equals(author)){
             issue.setHeader(issueUpdateDto.getHeader());
             issue.setContent(issueUpdateDto.getContent());
@@ -66,25 +72,29 @@ public class IssueServiceImpl implements IssueService{
 
             issueRepository.save(issue);
         }else{
-            throw new RuntimeException("Unauthorized!"); // TODO better exception
+            throw new UnauthorizedException("Unauthorized!");
         }
     }
 
     @Override
     public void deleteIssue(String author, Long id) {
         // TODO filtering based on visibility
-        Issue issue = issueRepository.findById(id).orElseThrow(() -> new RuntimeException("No such issue")); // TODO better exception
+        Issue issue = issueRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No such issue with id: " + id));
         if (authorizationUtil.isAdmin(author) || issue.getAuthor().getUsername().equals(author)){
             issueRepository.deleteById(id);
         }else{
-            throw new RuntimeException("Unauthorized!"); // TODO better exception
+            throw new UnauthorizedException("Unauthorized!"); // TODO better exception
         }
     }
 
     @Override
     public IssueGetDto getIssueById(Long id) {
         // TODO filtering based on visibility
-        Issue issue = issueRepository.findById(id).orElseThrow(() -> new RuntimeException("No such issue"));
+        Issue issue = issueRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No such issue with id: " + id));
         return modelMapper.map(issue, IssueGetDto.class);
     }
 
@@ -104,7 +114,8 @@ public class IssueServiceImpl implements IssueService{
 
     @Override
     public CommentGetDto getCommentById(Long id) {
-        Comment comment = commentRepository.findById(id).orElseThrow(() -> new RuntimeException("No such comment"));// TODO better exception
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No such comment with id: " + id));
         return modelMapper.map(comment, CommentGetDto.class);
     }
 
@@ -133,8 +144,11 @@ public class IssueServiceImpl implements IssueService{
     public Comment createCommentToIssue(String authorName, Long issueId, CommentCreateDto commentCreateDto) {
         // TODO filtering based on visibility
         Comment comment = modelMapper.map(commentCreateDto, Comment.class);
-        ApplicationUser author = userRepository.findByUsername(authorName).orElseThrow(() -> new UsernameNotFoundException("No such user"));
-        Issue issue = issueRepository.findById(issueId).orElseThrow(() -> new UsernameNotFoundException("No such issue"));
+        ApplicationUser author = userRepository
+                .findByUsername(authorName)
+                .orElseThrow(() -> new UsernameNotFoundException("No such user with name: " + authorName));
+        Issue issue = issueRepository.findById(issueId)
+                .orElseThrow(() -> new ResourceNotFoundException("No such issue"));
         comment.setAuthor(author);
         comment.setIssue(issue);
 
@@ -143,24 +157,27 @@ public class IssueServiceImpl implements IssueService{
 
     @Override
     public void updateComment(String author, Long id, CommentUpdateDto commentUpdateDto) {
-        Comment comment = commentRepository.findById(id).orElseThrow(() -> new RuntimeException("No such issue")); // TODO better exception
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No such issue with id: " + id));
         if (authorizationUtil.isAdmin(author) || comment.getAuthor().getUsername().equals(author)){
             comment.setContent(commentUpdateDto.getContent());
 
             commentRepository.save(comment);
         }else{
-            throw new RuntimeException("Unauthorized!"); // TODO better exception
+            throw new UnauthorizedException("Unauthorized!");
         }
     }
 
     @Override
     public void deleteComment(String author, Long id) {
         // TODO filtering based on visibility
-        Comment comment = commentRepository.findById(id).orElseThrow(() -> new RuntimeException("No such comment")); // TODO better exception
+        Comment comment = commentRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No such comment with id: " + id));
         if (authorizationUtil.isAdmin(author) || comment.getAuthor().getUsername().equals(author)){
             commentRepository.deleteById(id);
         }else{
-            throw new RuntimeException("Unauthorized!"); // TODO better exception
+            throw new UnauthorizedException("Unauthorized!");
         }
     }
 }

@@ -51,17 +51,11 @@ public class AuthenticationController {
         return ResponseEntity.ok(new JwtResponse(token, refreshToken));
     }
 
-    private void authenticate(String username, String password) throws Exception {
+    private void authenticate(String username, String password){
         Objects.requireNonNull(username);
         Objects.requireNonNull(password);
 
-        try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-        } catch (DisabledException e) {
-            throw new Exception("USER_DISABLED", e);
-        } catch (BadCredentialsException e) {
-            throw new Exception("INVALID_CREDENTIALS", e);
-        }
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
     }
 
     @PostMapping("/register")

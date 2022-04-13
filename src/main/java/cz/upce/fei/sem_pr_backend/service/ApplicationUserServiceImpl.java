@@ -9,6 +9,8 @@ import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserGetDto;
 import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserUpdateDto;
 import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserUpdatePasswordDto;
 import cz.upce.fei.sem_pr_backend.dto.profile.ProfileUpdateDto;
+import cz.upce.fei.sem_pr_backend.exception.ResourceNotFoundException;
+import cz.upce.fei.sem_pr_backend.exception.UnauthorizedException;
 import cz.upce.fei.sem_pr_backend.repository.ApplicationUserRepository;
 import cz.upce.fei.sem_pr_backend.repository.ProfileRepository;
 import cz.upce.fei.sem_pr_backend.repository.RoleRepository;
@@ -51,15 +53,21 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        ApplicationUser user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with name " + username + " not found"));
-        List<SimpleGrantedAuthority> grantedAuthorities = user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getType().toString())).collect(Collectors.toList());
+        ApplicationUser user = userRepository
+                .findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User with name " + username + " not found"));
+        List<SimpleGrantedAuthority> grantedAuthorities = user.getRoles()
+                .stream()
+                .map(role -> new SimpleGrantedAuthority(role.getType().toString()))
+                .collect(Collectors.toList());
         return new User(username, user.getPassword(), grantedAuthorities);
     }
 
     @Override
     public ApplicationUser createNormalUser(ApplicationUserCreateDto userDto) {
         ApplicationUser user = saveUser(userDto);
-        Role role = roleRepository.findByType(RoleType.ROLE_USER).orElseThrow(() -> new RuntimeException("No such role"));
+        Role role = roleRepository.findByType(RoleType.ROLE_USER)
+                .orElseThrow(() -> new ResourceNotFoundException("No such role of type: " + RoleType.ROLE_USER));
         user.getRoles().add(role);
         userRepository.save(user);
 
@@ -88,8 +96,12 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
     @Override
     @Transactional
     public void addRoleToUser(String username, RoleType roleName) {
-        ApplicationUser user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with name: " + username + " not found!"));
-        Role role = roleRepository.findByType(roleName).orElseThrow(() -> new RuntimeException("No such role"));
+        ApplicationUser user = userRepository
+                .findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User with name: " + username + " not found!"));
+        Role role = roleRepository
+                .findByType(roleName)
+                .orElseThrow(() -> new ResourceNotFoundException("No such role with name: " + roleName));
         user.getRoles().add(role);
     }
 
@@ -103,24 +115,30 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
     @Override
     public ApplicationUserGetDto getUserById(Long id) {
         ApplicationUser user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User with id: " + id + " not found!"));// TODO better exception
+                .orElseThrow(() -> new ResourceNotFoundException("User with id: " + id + " not found!"));
         return modelMapper.map(user, ApplicationUserGetDto.class);
     }
 
     @Override
     public void deleteUser(String username, Long id) {
-        ApplicationUser user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("No such user")); // TODO better exception
+        ApplicationUser user = userRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No such user with id: " + id));
         if (authorizationUtil.isAdmin(username) || user.getUsername().equals(username)){
             userRepository.deleteById(id);
         }else{
-            throw new RuntimeException("Unauthorized!"); // TODO better exception
+            throw new UnauthorizedException("Unauthorized!");
         }
     }
 
     @Override
     public void updateUserInfo(String username, Long id, ApplicationUserUpdateDto userUpdateDto) {
-        ApplicationUser user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("No such user")); // TODO better exception
-        Profile profile = profileRepository.findById(user.getProfile().getId()).orElseThrow(() -> new RuntimeException("No such user")); // TODO better exception
+        ApplicationUser user = userRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No such user with id: " + id));
+        Profile profile = profileRepository
+                .findById(user.getProfile().getId())
+                .orElseThrow(() -> new RuntimeException("No such profile with id: " + id));
         if (authorizationUtil.isAdmin(username) || user.getUsername().equals(username)){
             user.setEmail(userUpdateDto.getEmail());
             ProfileUpdateDto profileUpdateDto = userUpdateDto.getProfile();
@@ -131,13 +149,15 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
             profileRepository.save(profile);
 
         }else{
-            throw new RuntimeException("Unauthorized!"); // TODO better exception
+            throw new UnauthorizedException("Unauthorized!");
         }
     }
 
     @Override
     public void updateUserPassword(String username, Long id, ApplicationUserUpdatePasswordDto userUpdatePasswordDto) {
-        ApplicationUser user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("No such user")); // TODO better exception
+        ApplicationUser user = userRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No such user with id: " + id));
         if (authorizationUtil.isAdmin(username) || user.getUsername().equals(username)){
             // TODO check if old password is correct
             /*String hash = passwordEncoder.encode(userUpdatePasswordDto.getOldPassword());
@@ -147,7 +167,7 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
             user.setPassword(passwordEncoder.encode(userUpdatePasswordDto.getNewPassword()));
             userRepository.save(user);
         }else{
-            throw new RuntimeException("Unauthorized!"); // TODO better exception
+            throw new UnauthorizedException("Unauthorized!");
         }
     }
 
