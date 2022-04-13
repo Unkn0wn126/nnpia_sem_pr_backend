@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.Objects;
 
 @RestController
@@ -59,7 +60,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public void register(@RequestBody ApplicationUserCreateDto userRegisterDto){
+    public void register(@Valid @RequestBody ApplicationUserCreateDto userRegisterDto){
         userService.createNormalUser(userRegisterDto);
     }
 }
