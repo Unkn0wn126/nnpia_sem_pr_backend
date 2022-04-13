@@ -12,7 +12,6 @@ import cz.upce.fei.sem_pr_backend.dto.profile.ProfileUpdateDto;
 import cz.upce.fei.sem_pr_backend.repository.ApplicationUserRepository;
 import cz.upce.fei.sem_pr_backend.repository.ProfileRepository;
 import cz.upce.fei.sem_pr_backend.repository.RoleRepository;
-import cz.upce.fei.sem_pr_backend.repository.UserRoleRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -31,7 +30,6 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
 
     private final ApplicationUserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final UserRoleRepository userRoleRepository;
     private final ProfileRepository profileRepository;
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
@@ -39,13 +37,12 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
 
     public ApplicationUserServiceImpl(ApplicationUserRepository userRepository,
                                       RoleRepository roleRepository,
-                                      UserRoleRepository userRoleRepository, ProfileRepository profileRepository,
+                                      ProfileRepository profileRepository,
                                       PasswordEncoder passwordEncoder,
                                       ModelMapper modelMapper,
                                       AuthorizationUtil authorizationUtil) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
-        this.userRoleRepository = userRoleRepository;
         this.profileRepository = profileRepository;
         this.passwordEncoder = passwordEncoder;
         this.modelMapper = modelMapper;
@@ -55,7 +52,7 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         ApplicationUser user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with name " + username + " not found"));
-        List<SimpleGrantedAuthority> grantedAuthorities = user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getRole().getType().toString())).collect(Collectors.toList());
+        List<SimpleGrantedAuthority> grantedAuthorities = user.getRoles().stream().map(role -> new SimpleGrantedAuthority(role.getType().toString())).collect(Collectors.toList());
         return new User(username, user.getPassword(), grantedAuthorities);
     }
 
@@ -63,12 +60,8 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
     public ApplicationUser createNormalUser(ApplicationUserCreateDto userDto) {
         ApplicationUser user = saveUser(userDto);
         Role role = roleRepository.findByType(RoleType.ROLE_USER).orElseThrow(() -> new RuntimeException("No such role"));
-        UserHasRole userHasRole = new UserHasRole();
-        userHasRole.setUser(user);
-        userHasRole.setRole(role);
-        userHasRole.setId(new UserHasRoleId(user.getId(), role.getId()));
-        user.getRoles().add(userHasRole);
-        userRoleRepository.save(userHasRole);
+        user.getRoles().add(role);
+        userRepository.save(user);
 
         return user;
     }
@@ -97,12 +90,7 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
     public void addRoleToUser(String username, RoleType roleName) {
         ApplicationUser user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User with name: " + username + " not found!"));
         Role role = roleRepository.findByType(roleName).orElseThrow(() -> new RuntimeException("No such role"));
-        UserHasRole userHasRole = new UserHasRole();
-        userHasRole.setUser(user);
-        userHasRole.setRole(role);
-        user.getRoles().add(userHasRole);
-        userHasRole.setId(new UserHasRoleId(user.getId(), role.getId()));
-        userRoleRepository.save(userHasRole);
+        user.getRoles().add(role);
     }
 
     @Override

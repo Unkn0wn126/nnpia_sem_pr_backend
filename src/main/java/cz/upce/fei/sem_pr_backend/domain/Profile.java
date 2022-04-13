@@ -19,8 +19,9 @@ import java.util.Objects;
 @Table(name = "profiles")
 public class Profile {
     @Id
-    @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, updatable = false)
+    @SequenceGenerator(name = "profiles_id_seq", sequenceName = "profiles_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "profiles_id_seq")
     private Long id;
 
     @Column(nullable = false)

@@ -64,7 +64,7 @@ public class SemPrBackendApplication {
             issueService.createIssue("admin", new IssueCreateDto("It's not fucking working", "Title", IssueSeverity.LOW, IssueVisibility.PUBLIC, null));
             issueService.createIssue("rando", new IssueCreateDto("It's still not fucking working", "Title...", IssueSeverity.LOW, IssueVisibility.PUBLIC, null));
 
-            issueService.createCommentToIssue("admin", 8L, new CommentCreateDto("Get over it"));
+            issueService.createCommentToIssue("admin", 2L, new CommentCreateDto("Get over it"));
         };
     }
 }

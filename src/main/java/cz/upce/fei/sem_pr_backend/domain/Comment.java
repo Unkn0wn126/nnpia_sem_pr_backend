@@ -18,8 +18,9 @@ import java.util.Objects;
 @Table(name = "comments")
 public class Comment {
     @Id
-    @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, updatable = false)
+    @SequenceGenerator(name = "comments_id_seq", sequenceName = "comments_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "comments_id_seq")
     private Long id;
 
     @Column(length = 300)

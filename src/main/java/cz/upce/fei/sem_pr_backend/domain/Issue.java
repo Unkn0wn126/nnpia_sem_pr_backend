@@ -25,8 +25,9 @@ import java.util.Set;
 @Table(name = "issues")
 public class Issue {
     @Id
-    @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, updatable = false)
+    @SequenceGenerator(name = "issues_id_seq", sequenceName = "issues_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "issues_id_seq")
     private Long id;
 
     private String header;

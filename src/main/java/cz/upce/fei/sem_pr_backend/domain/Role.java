@@ -14,19 +14,23 @@ import java.util.Set;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "roles")
 public class Role {
     @Id
-    @Column(name = "id", nullable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false, updatable = false)
+    @SequenceGenerator(name = "roles_id_seq", sequenceName = "roles_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "roles_id_seq")
     private Long id;
 
     @Enumerated(EnumType.STRING)
     @Column(unique = true, nullable = false)
     private RoleType type;
 
-    @OneToMany(mappedBy = "role")
-    @ToString.Exclude
-    private Set<UserHasRole> users;
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "roles")
+    private Set<ApplicationUser> users;
+//    @OneToMany(mappedBy = "role")
+//    @ToString.Exclude
+//    private Set<UserHasRole> users;
 
     @Override
     public boolean equals(Object o) {
