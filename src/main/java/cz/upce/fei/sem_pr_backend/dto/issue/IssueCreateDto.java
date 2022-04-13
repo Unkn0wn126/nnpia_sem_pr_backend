@@ -3,12 +3,15 @@ package cz.upce.fei.sem_pr_backend.dto.issue;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueSeverity;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueVisibility;
+import cz.upce.fei.sem_pr_backend.dto.dto_validation.EnumNamePattern;
+import cz.upce.fei.sem_pr_backend.dto.dto_validation.IssueSeveritySubset;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -19,9 +22,11 @@ public class IssueCreateDto implements Serializable {
     private String header;
     private String content;
     @NotNull
-    private IssueSeverity severity;
+    @Pattern(regexp = "LOW|NORMAL|HIGH")
+    private String severity;
     @NotNull
-    private IssueVisibility visibility;
+    @Pattern(regexp = "PUBLIC|INTERNAL|PRIVATE")
+    private String visibility;
     @Future(message = "Can't set goals for the past")
     private Date dueDate;
 }

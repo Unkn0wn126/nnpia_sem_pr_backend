@@ -5,6 +5,7 @@ import cz.upce.fei.sem_pr_backend.domain.ApplicationUser;
 import cz.upce.fei.sem_pr_backend.domain.Comment;
 import cz.upce.fei.sem_pr_backend.domain.Issue;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueCompletionState;
+import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueSeverity;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueVisibility;
 import cz.upce.fei.sem_pr_backend.dto.comment.CommentCreateDto;
 import cz.upce.fei.sem_pr_backend.dto.comment.CommentGetDto;
@@ -67,11 +68,11 @@ public class IssueServiceAdminImpl implements IssueService{
                 .orElseThrow(() -> new ResourceNotFoundException("No such issue with id: " + id));
         issue.setHeader(issueUpdateDto.getHeader());
         issue.setContent(issueUpdateDto.getContent());
-        issue.setSeverity(issueUpdateDto.getSeverity());
-        issue.setVisibility(issueUpdateDto.getVisibility());
-        issue.setCompletionState(issueUpdateDto.getCompletionState());
+        issue.setSeverity(IssueSeverity.fromString(issueUpdateDto.getSeverity()));
+        issue.setVisibility(IssueVisibility.fromString(issueUpdateDto.getVisibility()));
+        issue.setCompletionState(IssueCompletionState.fromString(issueUpdateDto.getCompletionState()));
         issue.setDueDate(issueUpdateDto.getDueDate());
-        issue.setCompletionState(issueUpdateDto.getCompletionState());
+        issue.setCompletionState(IssueCompletionState.fromString(issueUpdateDto.getCompletionState()));
 
         issueRepository.save(issue);
     }

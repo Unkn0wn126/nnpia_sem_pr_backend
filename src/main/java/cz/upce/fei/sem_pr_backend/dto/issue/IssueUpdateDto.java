@@ -1,13 +1,19 @@
 package cz.upce.fei.sem_pr_backend.dto.issue;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueCompletionState;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueSeverity;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueVisibility;
+import cz.upce.fei.sem_pr_backend.dto.dto_validation.EnumNamePattern;
+import cz.upce.fei.sem_pr_backend.dto.dto_validation.IssueSeveritySubset;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Future;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -17,9 +23,16 @@ import java.util.Date;
 public class IssueUpdateDto implements Serializable {
     private String header;
     private String content;
-    private IssueSeverity severity;
-    private IssueVisibility visibility;
+    @NotNull
+    @Pattern(regexp = "LOW|NORMAL|HIGH")
+    private String severity;
+
+    @NotNull
+    @Pattern(regexp = "PUBLIC|INTERNAL|PRIVATE")
+    private String visibility;
     @Future(message = "Can't set goals for the past")
     private Date dueDate;
-    private IssueCompletionState completionState;
+    @NotNull
+    @Pattern(regexp = "TODO|IN_PROGRESS|DONE")
+    private String completionState;
 }
