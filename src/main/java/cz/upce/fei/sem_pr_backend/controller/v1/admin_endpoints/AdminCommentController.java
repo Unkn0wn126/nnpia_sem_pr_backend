@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/admin/comments")
@@ -22,7 +23,7 @@ public class AdminCommentController {
     }
 
     @GetMapping("/")
-    public List<CommentGetDto> getComments(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize){
+    public Map<String, Object> getComments(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize){
         return issueService.getAllComments(pageNumber, pageSize);
     }
 
@@ -32,12 +33,12 @@ public class AdminCommentController {
     }
 
     @GetMapping("/issue/{id}")
-    public List<CommentGetDto> getCommentsByIssueId(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize, @PathVariable Long id){
+    public Map<String, Object> getCommentsByIssueId(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize, @PathVariable Long id){
         return issueService.getIssueComments(id, pageNumber, pageSize);
     }
 
     @GetMapping("/user/{username}")
-    public List<CommentGetDto> getCommentsByAuthorUsername(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize, @PathVariable String username){
+    public Map<String, Object> getCommentsByAuthorUsername(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize, @PathVariable String username){
         return issueService.getCommentsByAuthor(username, pageNumber, pageSize);
     }
 

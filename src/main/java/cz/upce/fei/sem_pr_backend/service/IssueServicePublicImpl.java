@@ -16,14 +16,12 @@ import cz.upce.fei.sem_pr_backend.repository.ApplicationUserRepository;
 import cz.upce.fei.sem_pr_backend.repository.CommentRepository;
 import cz.upce.fei.sem_pr_backend.repository.IssueRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -72,19 +70,38 @@ public class IssueServicePublicImpl implements IssueService{
     }
 
     @Override
-    public List<IssueGetDto> getAllIssues(Principal principal, Integer pageNumber, Integer pageSize) {
-        return issueRepository.findAllByVisibility(new ArrayList<>(Collections.singletonList(IssueVisibility.PUBLIC)), null, PageRequest.of(pageNumber, pageSize))
+    public Map<String, Object> getAllIssues(Principal principal, Integer pageNumber, Integer pageSize) {
+        Page<Issue> allIssues = issueRepository.findAllByVisibility(new ArrayList<>(Collections.singletonList(IssueVisibility.PUBLIC)), null, PageRequest.of(pageNumber, pageSize));
+        List<IssueGetDto> issueGetDtos = allIssues
                 .stream().map(issue -> modelMapper.map(issue, IssueGetDto.class))
                 .collect(Collectors.toList());
+
+        Map<String, Object> pageObject = new HashMap<>();
+        pageObject.put("issues", issueGetDtos);
+        pageObject.put("currentPage", allIssues.getNumber());
+        pageObject.put("totalItems", allIssues.getTotalElements());
+        pageObject.put("totalPages", allIssues.getTotalPages());
+
+        return pageObject;
     }
 
     @Override
-    public List<IssueGetDto> getIssuesByAuthorName(Principal principal, String authorName, Integer pageNumber, Integer pageSize) {
+    public Map<String, Object> getIssuesByAuthorName(Principal principal, String authorName, Integer pageNumber, Integer pageSize) {
         List<IssueVisibility> visibilities = new ArrayList<>();
         visibilities.add(IssueVisibility.PUBLIC);
-        return issueRepository.findAllByAuthor(authorName, visibilities, null, PageRequest.of(pageNumber, pageSize))
+
+        Page<Issue> allIssues = issueRepository.findAllByAuthor(authorName, visibilities, null, PageRequest.of(pageNumber, pageSize));
+        List<IssueGetDto> issueGetDtos = allIssues
                 .stream().map(issue -> modelMapper.map(issue, IssueGetDto.class))
                 .collect(Collectors.toList());
+
+        Map<String, Object> pageObject = new HashMap<>();
+        pageObject.put("issues", issueGetDtos);
+        pageObject.put("currentPage", allIssues.getNumber());
+        pageObject.put("totalItems", allIssues.getTotalElements());
+        pageObject.put("totalPages", allIssues.getTotalPages());
+
+        return pageObject;
     }
 
     @Override
@@ -93,17 +110,17 @@ public class IssueServicePublicImpl implements IssueService{
     }
 
     @Override
-    public List<CommentGetDto> getAllComments(Integer pageNumber, Integer PageSize) {
+    public Map<String, Object> getAllComments(Integer pageNumber, Integer PageSize) {
         throw new UnauthorizedException("Unauthorized");
     }
 
     @Override
-    public List<CommentGetDto> getCommentsByAuthor(String authorName, Integer pageNumber, Integer PageSize) {
+    public Map<String, Object> getCommentsByAuthor(String authorName, Integer pageNumber, Integer PageSize) {
         throw new UnauthorizedException("Unauthorized");
     }
 
     @Override
-    public List<CommentGetDto> getIssueComments(Long id, Integer pageNumber, Integer PageSize) {
+    public Map<String, Object> getIssueComments(Long id, Integer pageNumber, Integer PageSize) {
         throw new UnauthorizedException("Unauthorized");
     }
 

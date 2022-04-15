@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/public/issues")
@@ -18,7 +19,7 @@ public class PublicIssueController {
     }
 
     @GetMapping("/")
-    public List<IssueGetDto> getAllIssues(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize){
+    public Map<String, Object> getAllIssues(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize){
         return issueService.getAllIssues(null, pageNumber, pageSize);
     }
 
@@ -28,7 +29,7 @@ public class PublicIssueController {
     }
 
     @GetMapping("/user/{username}")
-    public List<IssueGetDto> getIssuesByAuthorUsername(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize, @PathVariable String username){
+    public Map<String, Object> getIssuesByAuthorUsername(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize, @PathVariable String username){
         return issueService.getIssuesByAuthorName(null, username, pageNumber, pageSize);
     }
 }

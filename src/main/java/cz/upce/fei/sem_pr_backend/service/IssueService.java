@@ -11,6 +11,7 @@ import cz.upce.fei.sem_pr_backend.dto.issue.IssueUpdateDto;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 public interface IssueService {
     Issue createIssue(Principal principal, IssueCreateDto issueCreateDto);
@@ -19,13 +20,13 @@ public interface IssueService {
     void deleteIssue(Principal principal, Long id);
 
     IssueGetDto getIssueById(Principal principal, Long id);
-    List<IssueGetDto> getAllIssues(Principal principal, Integer pageNumber, Integer pageSize);
-    List<IssueGetDto> getIssuesByAuthorName(Principal principal, String authorName, Integer pageNumber, Integer pageSize);
+    Map<String, Object> getAllIssues(Principal principal, Integer pageNumber, Integer pageSize);
+    Map<String, Object> getIssuesByAuthorName(Principal principal, String authorName, Integer pageNumber, Integer pageSize);
 
     CommentGetDto getCommentById(Long id);
-    List<CommentGetDto> getAllComments(Integer pageNumber, Integer pageSize);
-    List<CommentGetDto> getCommentsByAuthor(String authorName, Integer pageNumber, Integer pageSize);
-    List<CommentGetDto> getIssueComments(Long id, Integer pageNumber, Integer pageSize);
+    Map<String, Object> getAllComments(Integer pageNumber, Integer pageSize);
+    Map<String, Object> getCommentsByAuthor(String authorName, Integer pageNumber, Integer pageSize);
+    Map<String, Object> getIssueComments(Long id, Integer pageNumber, Integer pageSize);
     Comment createCommentToIssue(Principal principal, Long issueId, CommentCreateDto commentCreateDto);
     void updateComment(Principal principal, Long id, CommentUpdateDto commentUpdateDto);
     void deleteComment(Principal principal, Long id);
