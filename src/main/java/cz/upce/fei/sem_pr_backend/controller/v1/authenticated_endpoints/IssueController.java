@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/issues")
@@ -22,7 +23,7 @@ public class IssueController {
     }
 
     @GetMapping("/")
-    public List<IssueGetDto> getAllIssues(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize, Principal principal){
+    public Map<String, Object> getAllIssues(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize, Principal principal){
         return issueService.getAllIssues(principal, pageNumber, pageSize);
     }
 
@@ -32,7 +33,7 @@ public class IssueController {
     }
 
     @GetMapping("/user/{username}")
-    public List<IssueGetDto> getIssuesByAuthorUsername(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize, Principal principal, @PathVariable String username){
+    public Map<String, Object> getIssuesByAuthorUsername(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize, Principal principal, @PathVariable String username){
         return issueService.getIssuesByAuthorName(principal, username, pageNumber, pageSize);
     }
 

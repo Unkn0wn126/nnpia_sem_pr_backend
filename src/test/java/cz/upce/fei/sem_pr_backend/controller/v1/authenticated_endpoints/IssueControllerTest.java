@@ -132,7 +132,7 @@ public class IssueControllerTest {
                 .principal(principal)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(5)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.issues", hasSize(5)));
     }
 
     // Get by id
@@ -196,7 +196,7 @@ public class IssueControllerTest {
                         .principal(principal)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(3)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.issues", hasSize(3)));
     }
 
     @Test
@@ -210,7 +210,7 @@ public class IssueControllerTest {
                         .principal(principal)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(2)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.issues", hasSize(2)));
     }
 
     @Test

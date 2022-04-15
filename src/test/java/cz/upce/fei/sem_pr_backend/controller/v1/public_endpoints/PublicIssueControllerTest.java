@@ -102,6 +102,6 @@ public class PublicIssueControllerTest {
                         .get(API_1_0_ISSUES + "/")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(2)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.issues", hasSize(2)));
     }
 }
