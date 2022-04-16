@@ -2,6 +2,7 @@ package cz.upce.fei.sem_pr_backend.controller.v1.public_endpoints;
 
 import cz.upce.fei.sem_pr_backend.config.JwtTokenUtil;
 import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserCreateDto;
+import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserGetDto;
 import cz.upce.fei.sem_pr_backend.dto.authentication.JwtRequest;
 import cz.upce.fei.sem_pr_backend.dto.authentication.JwtResponse;
 import cz.upce.fei.sem_pr_backend.service.ApplicationUserService;
@@ -43,13 +44,13 @@ public class AuthenticationController {
     public ResponseEntity<?> login(@RequestBody JwtRequest loginRequest, HttpServletRequest request) throws Exception {
         authenticate(loginRequest.getUsername(), loginRequest.getPassword());
 
-        final UserDetails userDetails =userService
+        final UserDetails userDetails = userService
                 .loadUserByUsername(loginRequest.getUsername());
 
         final String token = jwtTokenUtil.generateToken(userDetails, request.getRequestURL().toString());
         final String refreshToken = jwtTokenUtil.generateRefreshToken(userDetails, request.getRequestURL().toString());
-
-        return ResponseEntity.ok(new JwtResponse(token, refreshToken));
+        ApplicationUserGetDto userGetDto = userService.getUserByUsername(loginRequest.getUsername());
+        return ResponseEntity.ok(new JwtResponse(token, refreshToken, userGetDto));
     }
 
     private void authenticate(String username, String password){
