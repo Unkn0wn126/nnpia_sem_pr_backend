@@ -27,6 +27,11 @@ public class AdminIssueController {
         return issueService.getAllIssues(principal, pageNumber, pageSize);
     }
 
+    @GetMapping("")
+    public Map<String, Object> getAllIssuesList(Principal principal, @RequestParam() String[] sort, @RequestParam() Integer[] range, @RequestParam() Object filter){
+        return issueService.getAllIssues(principal, 0, 5);
+    }
+
     @GetMapping("/{id}")
     public IssueGetDto getIssueById(Principal principal, @PathVariable Long id){
         return issueService.getIssueById(principal, id);

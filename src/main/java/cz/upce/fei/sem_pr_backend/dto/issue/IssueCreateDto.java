@@ -22,7 +22,7 @@ public class IssueCreateDto implements Serializable {
     private String header;
     private String content;
     @NotNull
-    @Pattern(regexp = "LOW|NORMAL|HIGH")
+    @Pattern(regexp = "LOW|MEDIUM|HIGH")
     private String severity;
     @NotNull
     @Pattern(regexp = "PUBLIC|INTERNAL|PRIVATE")
