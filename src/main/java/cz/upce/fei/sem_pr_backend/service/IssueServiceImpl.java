@@ -224,7 +224,7 @@ public class IssueServiceImpl implements IssueService{
     public void updateComment(Principal principal, Long id, CommentUpdateDto commentUpdateDto) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No such issue with id: " + id));
-        if (authorizationUtil.canAlterResource(principal, id)){
+        if (authorizationUtil.canAlterResource(principal, comment.getAuthor().getId())){
             comment.setContent(commentUpdateDto.getContent());
 
             commentRepository.save(comment);
@@ -238,7 +238,7 @@ public class IssueServiceImpl implements IssueService{
         Comment comment = commentRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No such comment with id: " + id));
-        if (authorizationUtil.canAlterResource(principal, comment.getId())){
+        if (authorizationUtil.canAlterResource(principal, comment.getAuthor().getId())){
             commentRepository.deleteById(id);
         }else{
             throw new UnauthorizedException("Unauthorized!");
