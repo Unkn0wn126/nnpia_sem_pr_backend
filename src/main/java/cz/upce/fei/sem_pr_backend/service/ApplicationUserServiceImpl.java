@@ -15,6 +15,7 @@ import cz.upce.fei.sem_pr_backend.repository.ApplicationUserRepository;
 import cz.upce.fei.sem_pr_backend.repository.ProfileRepository;
 import cz.upce.fei.sem_pr_backend.repository.RoleRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,7 +28,9 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.security.Principal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -183,16 +186,33 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
     }
 
     @Override
-    public List<ApplicationUserGetDto> getAllUsers(Integer pageNumber, Integer pageSize) {
-        return userRepository.findAll(PageRequest.of(pageNumber, pageSize))
+    public Map<String, Object> getAllUsers(Integer pageNumber, Integer pageSize) {
+        Page<ApplicationUser> allUsers = userRepository.findAll(PageRequest.of(pageNumber, pageSize));
+        List<ApplicationUserGetDto> userGetDtos = allUsers
                 .stream().map(applicationUser -> modelMapper.map(applicationUser, ApplicationUserGetDto.class))
                 .collect(Collectors.toList());
+
+        Map<String, Object> pageObject = new HashMap<>();
+        pageObject.put("users", userGetDtos);
+        pageObject.put("currentPage", allUsers.getNumber());
+        pageObject.put("totalItems", allUsers.getTotalElements());
+        pageObject.put("totalPages", allUsers.getTotalPages());
+
+        return pageObject;
     }
 
     @Override
-    public List<ApplicationUserGetDto> getActiveUsers(Integer pageNumber, Integer pageSize) {
-        return userRepository.findAllByState(UserState.ACTIVE, PageRequest.of(pageNumber, pageSize))
+    public Map<String, Object> getActiveUsers(Integer pageNumber, Integer pageSize) {
+        Page<ApplicationUser> allUsers = userRepository.findAllByState(UserState.ACTIVE, PageRequest.of(pageNumber, pageSize));
+        List<ApplicationUserGetDto> userGetDtos = allUsers
                 .stream().map(applicationUser -> modelMapper.map(applicationUser, ApplicationUserGetDto.class))
                 .collect(Collectors.toList());
+        Map<String, Object> pageObject = new HashMap<>();
+        pageObject.put("users", userGetDtos);
+        pageObject.put("currentPage", allUsers.getNumber());
+        pageObject.put("totalItems", allUsers.getTotalElements());
+        pageObject.put("totalPages", allUsers.getTotalPages());
+
+        return pageObject;
     }
 }

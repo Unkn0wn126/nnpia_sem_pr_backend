@@ -23,10 +23,10 @@ public interface IssueService {
     Map<String, Object> getAllIssues(Principal principal, Integer pageNumber, Integer pageSize);
     Map<String, Object> getIssuesByAuthorName(Principal principal, String authorName, Integer pageNumber, Integer pageSize);
 
-    CommentGetDto getCommentById(Long id);
-    Map<String, Object> getAllComments(Integer pageNumber, Integer pageSize);
-    Map<String, Object> getCommentsByAuthor(String authorName, Integer pageNumber, Integer pageSize);
-    Map<String, Object> getIssueComments(Long id, Integer pageNumber, Integer pageSize);
+    CommentGetDto getCommentById(Principal principal, Long id);
+    Map<String, Object> getAllComments(Principal principal, Integer pageNumber, Integer pageSize);
+    Map<String, Object> getCommentsByAuthor(Principal principal, String authorName, Integer pageNumber, Integer pageSize);
+    Map<String, Object> getIssueComments(Principal principal, Long id, Integer pageNumber, Integer pageSize);
     Comment createCommentToIssue(Principal principal, Long issueId, CommentCreateDto commentCreateDto);
     void updateComment(Principal principal, Long id, CommentUpdateDto commentUpdateDto);
     void deleteComment(Principal principal, Long id);

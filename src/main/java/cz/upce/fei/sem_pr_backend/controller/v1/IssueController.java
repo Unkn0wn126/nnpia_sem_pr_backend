@@ -1,4 +1,4 @@
-package cz.upce.fei.sem_pr_backend.controller.v1.admin_endpoints;
+package cz.upce.fei.sem_pr_backend.controller.v1;
 
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueCreateDto;
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueGetDto;
@@ -13,23 +13,18 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("api/v1/admin/issues")
-public class AdminIssueController {
+@RequestMapping("/api/v1/issues")
+public class IssueController {
 
     private final IssueService issueService;
 
-    public AdminIssueController(@Qualifier("issueServiceAdminImpl") IssueService issueService) {
+    public IssueController(@Qualifier("issueServiceImpl") IssueService issueService) {
         this.issueService = issueService;
     }
 
     @GetMapping("/")
-    public Map<String, Object> getAllIssues(Principal principal, @RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize){
+    public Map<String, Object> getAllIssues(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize, Principal principal){
         return issueService.getAllIssues(principal, pageNumber, pageSize);
-    }
-
-    @GetMapping("")
-    public Map<String, Object> getAllIssuesList(Principal principal, @RequestParam() String[] sort, @RequestParam() Integer[] range, @RequestParam() Object filter){
-        return issueService.getAllIssues(principal, 0, 5);
     }
 
     @GetMapping("/{id}")

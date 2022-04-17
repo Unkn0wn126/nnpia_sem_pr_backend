@@ -49,7 +49,6 @@ public class IssueGetDto implements Serializable, DTO {
     @NotNull
     private IssueCompletionState completionState;
     private ApplicationUserGetDto author;
-    private Set<CommentGetDto> comments;
 
     @Override
     public ModelMapper updateModelMapper(ModelMapper modelMapper) {
