@@ -18,6 +18,8 @@ public interface IssueRepository extends JpaRepository<Issue, Long> {
             "order by i.published")
     Optional<Issue> findByIdAndVisibility(@Param("id") Long id, @Param("visibility") List<IssueVisibility> issueVisibility, @Param("accessorName") String accessorName);
 
+    Optional<Issue> findById(@Param("id") Long id);
+
     @Query(value = "SELECT i from Issue i " +
             "where (i.author.username = :authorName and i.visibility in (:visibility)) " +
             "or (i.author.username = :authorName and i.author.username = :accessorName) " +

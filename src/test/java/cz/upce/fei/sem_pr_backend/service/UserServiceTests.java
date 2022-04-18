@@ -36,8 +36,8 @@ class UserServiceTests {
 
     @BeforeEach
     void initUseCase(){
-        AuthorizationUtil authorizationUtil = new AuthorizationUtil(userRepository);
-        userService = new ApplicationUserServiceImpl(userRepository, roleRepository, profileRepository, new BCryptPasswordEncoder(), new ModelMapper(), authorizationUtil);
+        AuthorizationService authorizationService = new AuthorizationServiceImpl(userRepository);
+        userService = new ApplicationUserServiceImpl(userRepository, roleRepository, profileRepository, new BCryptPasswordEncoder(), new ModelMapper(), authorizationService);
     }
 
     @Test

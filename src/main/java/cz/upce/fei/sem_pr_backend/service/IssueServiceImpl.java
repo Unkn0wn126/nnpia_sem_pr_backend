@@ -100,8 +100,14 @@ public class IssueServiceImpl implements IssueService{
     @Override
     public IssueGetDto getIssueById(Principal principal, Long id) {
         Issue issue = issueRepository
-                .findByIdAndVisibility(id, getAuthenticadedVisibilities(), authorizationService.getPrincipalName(principal))
+                .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No such issue with id: " + id));
+
+        if(issue.getVisibility() != IssueVisibility.PUBLIC && !authorizationService.isAuthenticated(principal)){
+            throw new UnauthorizedException("Unauthorized");
+        }else if(issue.getVisibility() == IssueVisibility.PRIVATE && !authorizationService.canAlterResource(principal, issue.getAuthor().getId())){
+            throw new UnauthorizedException("Unauthorized");
+        }
 
         return modelMapper.map(issue, IssueGetDto.class);
     }

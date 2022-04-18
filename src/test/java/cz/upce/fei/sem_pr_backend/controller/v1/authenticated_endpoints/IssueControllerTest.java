@@ -1,9 +1,6 @@
 package cz.upce.fei.sem_pr_backend.controller.v1.authenticated_endpoints;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.upce.fei.sem_pr_backend.domain.ApplicationUser;
-import cz.upce.fei.sem_pr_backend.domain.Role;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueCompletionState;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueSeverity;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueVisibility;
@@ -13,40 +10,30 @@ import cz.upce.fei.sem_pr_backend.dto.issue.IssueCreateDto;
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueUpdateDto;
 import cz.upce.fei.sem_pr_backend.dto.profile.ProfileCreateDto;
 import cz.upce.fei.sem_pr_backend.service.ApplicationUserService;
-import cz.upce.fei.sem_pr_backend.service.ApplicationUserServiceImpl;
 import cz.upce.fei.sem_pr_backend.service.IssueService;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
-import org.mockito.*;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.security.Principal;
-import java.time.LocalDate;
-import java.util.*;
+import java.util.Date;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.when;
 
@@ -115,10 +102,11 @@ public class IssueControllerTest {
     // Get all
 
     @Test
-    void getAllIssues_whenNotAuthenticated_receiveUnAuthorized() throws Exception {
+    void getAllIssues_whenNotAuthenticated_receiveOk() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(API_1_0_ISSUES + "/")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.issues", hasSize(2)));
     }
 
     @Test
@@ -165,7 +153,7 @@ public class IssueControllerTest {
 
     @Test
     @WithMockUser(username = "rando", password = "P4ssw0rd$", authorities = "ROLE_USER")
-    void getInaccessibleIssueById_whenAuthenticated_receiveNotFound() throws Exception {
+    void getInaccessibleIssueById_whenAuthenticated_receiveUnauthorized() throws Exception {
         Principal principal = Mockito.mock(Principal.class);
         when(principal.getName()).thenReturn("rando");
 
@@ -173,12 +161,26 @@ public class IssueControllerTest {
                         .get(API_1_0_ISSUES + "/3")
                         .principal(principal)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());
+                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
     }
 
     @Test
-    void getIssueById_whenNotAuthenticated_receiveUnAuthorized() throws Exception {
+    void getPublicIssueById_whenNotAuthenticated_receiveOk() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get(API_1_0_ISSUES + "/4")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    void getInternalIssueById_whenNotAuthenticated_receiveUnauthorized() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(API_1_0_ISSUES + "/2")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
+    }
+
+    @Test
+    void getPrivateIssueById_whenNotAuthenticated_receiveUnauthorized() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(API_1_0_ISSUES + "/3")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isUnauthorized());
     }
@@ -214,10 +216,11 @@ public class IssueControllerTest {
     }
 
     @Test
-    void getIssuesByAuthor_whenNotAuthenticated_receiveUnAuthorized() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(API_1_0_ISSUES + "/4")
+    void getIssuesByAuthor_whenNotAuthenticated_receiveOk() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get(API_1_0_ISSUES_AUTHOR + "/rando")
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isUnauthorized());
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.issues", hasSize(1)));
     }
 
     // Create
