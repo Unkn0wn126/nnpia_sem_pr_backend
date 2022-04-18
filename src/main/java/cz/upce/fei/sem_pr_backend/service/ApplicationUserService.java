@@ -10,6 +10,7 @@ import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserUpdatePassw
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 public interface ApplicationUserService {
     ApplicationUser createNormalUser(ApplicationUserCreateDto userDto);
@@ -22,6 +23,6 @@ public interface ApplicationUserService {
     void deleteUser(Principal principal, Long id);
     void updateUserInfo(Principal principal, Long id, ApplicationUserUpdateDto userUpdateDto);
     void updateUserPassword(Principal principal, Long id, ApplicationUserUpdatePasswordDto userUpdatePasswordDto);
-    List<ApplicationUserGetDto> getAllUsers(Integer pageNumber, Integer pageSize);
-    List<ApplicationUserGetDto> getActiveUsers(Integer pageNumber, Integer pageSize);
+    Map<String, Object> getAllUsers(Integer pageNumber, Integer pageSize);
+    Map<String, Object> getActiveUsers(Integer pageNumber, Integer pageSize);
 }

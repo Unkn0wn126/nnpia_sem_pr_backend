@@ -1,4 +1,4 @@
-package cz.upce.fei.sem_pr_backend.controller.v1.admin_endpoints;
+package cz.upce.fei.sem_pr_backend.controller.v1;
 
 import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserGetDto;
 import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserUpdateDto;
@@ -9,19 +9,20 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
 
 @RestController
-@RequestMapping("api/v1/admin/users")
-public class AdminUserController {
+@RequestMapping("/api/v1/users")
+public class UserController {
 
     private final ApplicationUserService userService;
 
-    public AdminUserController(ApplicationUserService userService) {
+    public UserController(ApplicationUserService userService) {
         this.userService = userService;
     }
 
     @GetMapping("/")
-    public List<ApplicationUserGetDto> getUsers(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize){
+    public Map<String, Object> getUsers(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize){
         return userService.getAllUsers(pageNumber, pageSize);
     }
 

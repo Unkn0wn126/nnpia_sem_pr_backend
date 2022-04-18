@@ -30,6 +30,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 @SpringBootApplication
 @PropertySource("classpath:application-${spring.profiles.active:default}.properties")
@@ -51,14 +53,15 @@ public class SemPrBackendApplication {
 
     @Bean
     //@Profile("default")
-    CommandLineRunner run(ApplicationUserService userService, @Qualifier("issueServiceAdminImpl") IssueService issueService){
+    CommandLineRunner run(ApplicationUserService userService, @Qualifier("issueServiceImpl") IssueService issueService){
         return args -> {
             if (userService.getAllRoles().size() == 0){
                 userService.saveRole(new Role(null, RoleType.ROLE_ADMIN, new HashSet<>()));
                 userService.saveRole(new Role(null, RoleType.ROLE_USER, new HashSet<>()));
             }
 
-            if (userService.getAllUsers(0, 1).size() == 0){
+            List<ApplicationUser> users = (List<ApplicationUser>) userService.getAllUsers(0, 1).get("users");
+            if (users.size() == 0){
                 userService.saveUser(new ApplicationUserCreateDto("admin", "admin@root.com", "P4ssw0rd$", new ProfileCreateDto("Root", null)));
 
                 userService.addRoleToUser("admin", RoleType.ROLE_USER);

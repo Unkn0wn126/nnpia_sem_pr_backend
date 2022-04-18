@@ -1,4 +1,4 @@
-package cz.upce.fei.sem_pr_backend.controller.v1.authenticated_endpoints;
+package cz.upce.fei.sem_pr_backend.controller.v1;
 
 import cz.upce.fei.sem_pr_backend.domain.Comment;
 import cz.upce.fei.sem_pr_backend.dto.comment.CommentCreateDto;
@@ -25,23 +25,23 @@ public class CommentController {
     }
 
     @GetMapping("/")
-    public Map<String, Object> getComments(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize){
-        return issueService.getAllComments(pageNumber, pageSize);
+    public Map<String, Object> getComments(Principal principal, @RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize){
+        return issueService.getAllComments(principal, pageNumber, pageSize);
     }
 
     @GetMapping("/{id}")
-    public CommentGetDto getCommentById(@PathVariable Long id){
-        return issueService.getCommentById(id);
+    public CommentGetDto getCommentById(Principal principal, @PathVariable Long id){
+        return issueService.getCommentById(principal, id);
     }
 
     @GetMapping("/issue/{id}")
-    public Map<String, Object> getCommentsByIssueId(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize, @PathVariable Long id){
-        return issueService.getIssueComments(id, pageNumber, pageSize);
+    public Map<String, Object> getCommentsByIssueId(Principal principal, @RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize, @PathVariable Long id){
+        return issueService.getIssueComments(principal, id, pageNumber, pageSize);
     }
 
     @GetMapping("/user/{username}")
-    public Map<String, Object> getCommentsByAuthorUsername(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize, @PathVariable String username){
-        return issueService.getCommentsByAuthor(username, pageNumber, pageSize);
+    public Map<String, Object> getCommentsByAuthorUsername(Principal principal, @RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize, @PathVariable String username){
+        return issueService.getCommentsByAuthor(principal, username, pageNumber, pageSize);
     }
 
     @DeleteMapping("/delete/{id}")
