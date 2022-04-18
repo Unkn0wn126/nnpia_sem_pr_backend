@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -12,6 +13,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class ProfileCreateDto implements Serializable {
     @NotNull
+    @NotEmpty
     private String nickname;
-    private String profilePicturePath;
+    private String profilePicture;
 }

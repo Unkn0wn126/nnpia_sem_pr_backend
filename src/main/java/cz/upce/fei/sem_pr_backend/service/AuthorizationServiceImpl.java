@@ -3,6 +3,7 @@ package cz.upce.fei.sem_pr_backend.service;
 import cz.upce.fei.sem_pr_backend.domain.ApplicationUser;
 import cz.upce.fei.sem_pr_backend.domain.Role;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.RoleType;
+import cz.upce.fei.sem_pr_backend.domain.enum_type.UserState;
 import cz.upce.fei.sem_pr_backend.repository.ApplicationUserRepository;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +22,13 @@ public class AuthorizationServiceImpl implements AuthorizationService{
 
     @Override
     public boolean isAuthenticated(Principal principal) {
-        return principal != null && userRepository.findByUsername(principal.getName()).isPresent();
+        if(principal == null){
+            return false;
+        }
+
+        Optional<ApplicationUser> userOptional = userRepository.findByUsername(principal.getName());
+
+        return userOptional.isPresent() && userOptional.get().getState() == UserState.ACTIVE;
     }
 
     @Override

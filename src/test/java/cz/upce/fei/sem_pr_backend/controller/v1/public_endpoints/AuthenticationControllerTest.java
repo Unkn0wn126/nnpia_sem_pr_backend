@@ -1,18 +1,14 @@
 package cz.upce.fei.sem_pr_backend.controller.v1.public_endpoints;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import cz.upce.fei.sem_pr_backend.config.JwtTokenUtil;
 import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserCreateDto;
-import cz.upce.fei.sem_pr_backend.dto.authentication.JwtRequest;
 import cz.upce.fei.sem_pr_backend.dto.profile.ProfileCreateDto;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
@@ -47,7 +43,7 @@ class AuthenticationControllerTest {
         userCreateDto.setPassword("P4ssw0rd$");
         userCreateDto.setEmail("email@exampl.com");
         ProfileCreateDto profileCreateDto = new ProfileCreateDto();
-        profileCreateDto.setProfilePicturePath(null);
+        profileCreateDto.setProfilePicture(null);
         profileCreateDto.setNickname("User");
         userCreateDto.setProfile(profileCreateDto);
         String body = objectMapper.writeValueAsString(userCreateDto);
@@ -66,7 +62,7 @@ class AuthenticationControllerTest {
         userCreateDto.setPassword("password");
         userCreateDto.setEmail("email@exampl.com");
         ProfileCreateDto profileCreateDto = new ProfileCreateDto();
-        profileCreateDto.setProfilePicturePath(null);
+        profileCreateDto.setProfilePicture(null);
         profileCreateDto.setNickname("User");
         userCreateDto.setProfile(profileCreateDto);
         String body = objectMapper.writeValueAsString(userCreateDto);

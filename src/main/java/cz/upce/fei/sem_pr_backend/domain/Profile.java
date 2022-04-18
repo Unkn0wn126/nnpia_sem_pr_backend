@@ -7,6 +7,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.sql.Blob;
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -28,8 +29,8 @@ public class Profile {
     @NotNull
     private String nickname;
 
-    @Column(unique = true)
-    private String profilePicturePath;
+    @Column(length = 10485760)
+    private String profilePicture;
 
     @Column(nullable = false)
     @CreationTimestamp

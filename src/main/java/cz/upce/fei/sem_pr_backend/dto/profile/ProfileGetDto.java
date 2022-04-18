@@ -17,7 +17,7 @@ public class ProfileGetDto implements Serializable {
     private Long id;
     @NotNull
     private String nickname;
-    private String profilePicturePath;
+    private String profilePicture;
     @JsonSerialize(using = JsonTimeStampSerializer.class)
     private Timestamp created;
     @JsonSerialize(using = JsonTimeStampSerializer.class)

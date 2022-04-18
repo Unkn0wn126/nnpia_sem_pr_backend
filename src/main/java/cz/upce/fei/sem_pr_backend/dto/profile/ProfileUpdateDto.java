@@ -1,10 +1,10 @@
 package cz.upce.fei.sem_pr_backend.dto.profile;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
@@ -12,8 +12,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProfileUpdateDto implements Serializable {
-    private Long id;
     @NotNull
+    @NotEmpty
     private String nickname;
-    private String profilePicturePath;
+    private String profilePicture;
 }
