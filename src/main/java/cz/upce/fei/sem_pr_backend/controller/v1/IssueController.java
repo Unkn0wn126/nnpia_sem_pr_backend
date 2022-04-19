@@ -2,12 +2,14 @@ package cz.upce.fei.sem_pr_backend.controller.v1;
 
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueCreateDto;
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueGetDto;
+import cz.upce.fei.sem_pr_backend.dto.issue.IssuePageGetDto;
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueUpdateDto;
 import cz.upce.fei.sem_pr_backend.service.IssueService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
@@ -23,8 +25,12 @@ public class IssueController {
     }
 
     @GetMapping("/")
-    public Map<String, Object> getAllIssues(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize, Principal principal){
-        return issueService.getAllIssues(principal, pageNumber, pageSize);
+    public IssuePageGetDto getAllIssues(Principal principal,
+                                        @RequestParam(defaultValue = "0") Integer pageNumber,
+                                        @RequestParam(defaultValue = "5") Integer pageSize,
+                                        @Valid @Pattern(regexp = "ASC|DESC") @RequestParam(defaultValue = "ASC") String direction,
+                                        @RequestParam(defaultValue = "published") String... orderBy){
+        return issueService.getAllIssues(principal, pageNumber, pageSize, direction, orderBy);
     }
 
     @GetMapping("/{id}")
@@ -33,8 +39,13 @@ public class IssueController {
     }
 
     @GetMapping("/user/{username}")
-    public Map<String, Object> getIssuesByAuthorUsername(@RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize, Principal principal, @PathVariable String username){
-        return issueService.getIssuesByAuthorName(principal, username, pageNumber, pageSize);
+    public IssuePageGetDto getIssuesByAuthorUsername(Principal principal,
+                                                         @RequestParam(defaultValue = "0") Integer pageNumber,
+                                                         @RequestParam(defaultValue = "5") Integer pageSize,
+                                                         @PathVariable String username,
+                                                         @Valid @Pattern(regexp = "ASC|DESC") @RequestParam(defaultValue = "ASC") String direction,
+                                                         @RequestParam(defaultValue = "published") String... orderBy){
+        return issueService.getIssuesByAuthorName(principal, username, pageNumber, pageSize, direction, orderBy);
     }
 
     @DeleteMapping("/delete/{id}")

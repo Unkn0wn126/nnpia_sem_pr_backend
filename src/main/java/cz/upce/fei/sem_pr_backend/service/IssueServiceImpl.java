@@ -9,9 +9,11 @@ import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueSeverity;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.IssueVisibility;
 import cz.upce.fei.sem_pr_backend.dto.comment.CommentCreateDto;
 import cz.upce.fei.sem_pr_backend.dto.comment.CommentGetDto;
+import cz.upce.fei.sem_pr_backend.dto.comment.CommentPageGetDto;
 import cz.upce.fei.sem_pr_backend.dto.comment.CommentUpdateDto;
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueCreateDto;
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueGetDto;
+import cz.upce.fei.sem_pr_backend.dto.issue.IssuePageGetDto;
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueUpdateDto;
 import cz.upce.fei.sem_pr_backend.exception.ResourceNotFoundException;
 import cz.upce.fei.sem_pr_backend.exception.UnauthorizedException;
@@ -21,6 +23,7 @@ import cz.upce.fei.sem_pr_backend.repository.IssueRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -121,7 +124,7 @@ public class IssueServiceImpl implements IssueService{
     }
 
     @Override
-    public Map<String, Object> getAllIssues(Principal principal, Integer pageNumber, Integer pageSize) {
+    public IssuePageGetDto getAllIssues(Principal principal, Integer pageNumber, Integer pageSize, String direction, String... properties) {
         List<IssueVisibility> visibilities = new ArrayList<>();
         visibilities.add(IssueVisibility.PUBLIC);
         if(authorizationService.isAuthenticated(principal))
@@ -129,22 +132,25 @@ public class IssueServiceImpl implements IssueService{
         if(authorizationService.isAdmin(principal))
             visibilities.add(IssueVisibility.PRIVATE);
 
-        Page<Issue> allIssues = issueRepository.findAllByVisibility(visibilities, authorizationService.getPrincipalName(principal), PageRequest.of(pageNumber, pageSize));
+        Page<Issue> allIssues = issueRepository.findAllByVisibility(
+                visibilities,
+                authorizationService.getPrincipalName(principal),
+                PageRequest.of(pageNumber, pageSize, Sort.Direction.valueOf(direction), properties));
         List<IssueGetDto> issueGetDtos = allIssues
                 .stream().map(issue -> modelMapper.map(issue, IssueGetDto.class))
                 .collect(Collectors.toList());
 
-        Map<String, Object> pageObject = new HashMap<>();
-        pageObject.put("issues", issueGetDtos);
-        pageObject.put("currentPage", allIssues.getNumber());
-        pageObject.put("totalItems", allIssues.getTotalElements());
-        pageObject.put("totalPages", allIssues.getTotalPages());
+        IssuePageGetDto pageObject = new IssuePageGetDto();
+        pageObject.setIssues(issueGetDtos);
+        pageObject.setCurrentPage(allIssues.getNumber());
+        pageObject.setTotalItems(allIssues.getTotalElements());
+        pageObject.setTotalPages(allIssues.getTotalPages());
 
         return pageObject;
     }
 
     @Override
-    public Map<String, Object> getIssuesByAuthorName(Principal principal, String authorName, Integer pageNumber, Integer pageSize) {
+    public IssuePageGetDto getIssuesByAuthorName(Principal principal, String authorName, Integer pageNumber, Integer pageSize, String direction, String... properties) {
         List<IssueVisibility> visibilities = new ArrayList<>();
         visibilities.add(IssueVisibility.PUBLIC);
         if(authorizationService.isAuthenticated(principal))
@@ -152,16 +158,18 @@ public class IssueServiceImpl implements IssueService{
         if(authorizationService.isAdmin(principal))
             visibilities.add(IssueVisibility.PRIVATE);
 
-        Page<Issue> allIssues = issueRepository.findAllByAuthor(authorName, visibilities, authorizationService.getPrincipalName(principal), PageRequest.of(pageNumber, pageSize));
+        Page<Issue> allIssues = issueRepository.findAllByAuthor(authorName,
+                visibilities, authorizationService.getPrincipalName(principal),
+                PageRequest.of(pageNumber, pageSize, Sort.Direction.valueOf(direction), properties));
         List<IssueGetDto> issueGetDtos = allIssues
                 .stream().map(issue -> modelMapper.map(issue, IssueGetDto.class))
                 .collect(Collectors.toList());
 
-        Map<String, Object> pageObject = new HashMap<>();
-        pageObject.put("issues", issueGetDtos);
-        pageObject.put("currentPage", allIssues.getNumber());
-        pageObject.put("totalItems", allIssues.getTotalElements());
-        pageObject.put("totalPages", allIssues.getTotalPages());
+        IssuePageGetDto pageObject = new IssuePageGetDto();
+        pageObject.setIssues(issueGetDtos);
+        pageObject.setCurrentPage(allIssues.getNumber());
+        pageObject.setTotalItems(allIssues.getTotalElements());
+        pageObject.setTotalPages(allIssues.getTotalPages());
 
         return pageObject;
     }
@@ -174,55 +182,55 @@ public class IssueServiceImpl implements IssueService{
     }
 
     @Override
-    public Map<String, Object> getAllComments(Principal principal, Integer pageNumber, Integer pageSize) {
-        Page<Comment> allComments = commentRepository.findAll(PageRequest.of(pageNumber, pageSize));
-        List<CommentGetDto> issueGetDtos = allComments
+    public CommentPageGetDto getAllComments(Principal principal, Integer pageNumber, Integer pageSize, String direction, String... properties) {
+        Page<Comment> allComments = commentRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.Direction.valueOf(direction), properties)); // TODO sorting based on visibility
+        List<CommentGetDto> commentGetDtos = allComments
                 .stream().map(comment -> modelMapper.map(comment, CommentGetDto.class))
                 .collect(Collectors.toList());
 
-        Map<String, Object> pageObject = new HashMap<>();
-        pageObject.put("comments", issueGetDtos);
-        pageObject.put("currentPage", allComments.getNumber());
-        pageObject.put("totalItems", allComments.getTotalElements());
-        pageObject.put("totalPages", allComments.getTotalPages());
+        CommentPageGetDto pageObject = new CommentPageGetDto();
+        pageObject.setComments(commentGetDtos);
+        pageObject.setCurrentPage(allComments.getNumber());
+        pageObject.setTotalItems(allComments.getTotalElements());
+        pageObject.setTotalPages(allComments.getTotalPages());
 
         return pageObject;
     }
 
     @Override
-    public Map<String, Object> getCommentsByAuthor(Principal principal, String authorName, Integer pageNumber, Integer pageSize) {
-        Page<Comment> allComments = commentRepository.findAllByAuthor(authorName, PageRequest.of(pageNumber, pageSize));// TODO filtering based on visibility?
-        List<CommentGetDto> issueGetDtos = allComments
+    public CommentPageGetDto getCommentsByAuthor(Principal principal, String authorName, Integer pageNumber, Integer pageSize, String direction, String... properties) {
+        Page<Comment> allComments = commentRepository.findAllByAuthor(authorName, PageRequest.of(pageNumber, pageSize, Sort.Direction.valueOf(direction), properties));// TODO filtering based on visibility?
+        List<CommentGetDto> commentGetDtos = allComments
                 .stream().map(comment -> modelMapper.map(comment, CommentGetDto.class))
                 .collect(Collectors.toList());
 
-        Map<String, Object> pageObject = new HashMap<>();
-        pageObject.put("comments", issueGetDtos);
-        pageObject.put("currentPage", allComments.getNumber());
-        pageObject.put("totalItems", allComments.getTotalElements());
-        pageObject.put("totalPages", allComments.getTotalPages());
+        CommentPageGetDto pageObject = new CommentPageGetDto();
+        pageObject.setComments(commentGetDtos);
+        pageObject.setCurrentPage(allComments.getNumber());
+        pageObject.setTotalItems(allComments.getTotalElements());
+        pageObject.setTotalPages(allComments.getTotalPages());
 
         return pageObject;
     }
 
     @Override
-    public Map<String, Object> getIssueComments(Principal principal, Long id, Integer pageNumber, Integer pageSize) {
+    public CommentPageGetDto getIssueComments(Principal principal, Long id, Integer pageNumber, Integer pageSize, String direction, String... properties) {
         Issue issue = issueRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No such issue with id " + id));
         if (issue.getVisibility() != IssueVisibility.PUBLIC && !authorizationService.isAuthenticated(principal)){
             throw new UnauthorizedException("Unauthorized!");
         } else if(issue.getVisibility() == IssueVisibility.PRIVATE && !authorizationService.canAlterResource(principal, issue.getAuthor().getId())){
             throw new UnauthorizedException("Unauthorized!");
         }
-        Page<Comment> allComments = commentRepository.findAllByIssueId(id, PageRequest.of(pageNumber, pageSize));
-        List<CommentGetDto> issueGetDtos = allComments
+        Page<Comment> allComments = commentRepository.findAllByIssueId(id, PageRequest.of(pageNumber, pageSize, Sort.Direction.valueOf(direction), properties));
+        List<CommentGetDto> commentGetDtos = allComments
                 .stream().map(comment -> modelMapper.map(comment, CommentGetDto.class))
                 .collect(Collectors.toList());
 
-        Map<String, Object> pageObject = new HashMap<>();
-        pageObject.put("comments", issueGetDtos);
-        pageObject.put("currentPage", allComments.getNumber());
-        pageObject.put("totalItems", allComments.getTotalElements());
-        pageObject.put("totalPages", allComments.getTotalPages());
+        CommentPageGetDto pageObject = new CommentPageGetDto();
+        pageObject.setComments(commentGetDtos);
+        pageObject.setCurrentPage(allComments.getNumber());
+        pageObject.setTotalItems(allComments.getTotalElements());
+        pageObject.setTotalPages(allComments.getTotalPages());
 
         return pageObject;
     }

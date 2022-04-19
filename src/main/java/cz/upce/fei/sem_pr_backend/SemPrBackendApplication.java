@@ -60,7 +60,7 @@ public class SemPrBackendApplication {
                 userService.saveRole(new Role(null, RoleType.ROLE_USER, new HashSet<>()));
             }
 
-            List<ApplicationUser> users = (List<ApplicationUser>) userService.getAllUsers(0, 1).get("users");
+            List<ApplicationUserGetDto> users = (List<ApplicationUserGetDto>) userService.getAllUsers(0, 1, "ASC", "id").getUsers();
             if (users.size() == 0){
                 userService.saveUser(new ApplicationUserCreateDto("admin", "admin@root.com", "P4ssw0rd$", new ProfileCreateDto("Root", null)));
 

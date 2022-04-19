@@ -3,10 +3,7 @@ package cz.upce.fei.sem_pr_backend.service;
 import cz.upce.fei.sem_pr_backend.domain.*;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.RoleType;
 import cz.upce.fei.sem_pr_backend.domain.enum_type.UserState;
-import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserCreateDto;
-import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserGetDto;
-import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserUpdateDto;
-import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserUpdatePasswordDto;
+import cz.upce.fei.sem_pr_backend.dto.applicationuser.*;
 import cz.upce.fei.sem_pr_backend.dto.profile.ProfileUpdateDto;
 import cz.upce.fei.sem_pr_backend.exception.ResourceNotFoundException;
 import cz.upce.fei.sem_pr_backend.exception.UnauthorizedException;
@@ -16,6 +13,7 @@ import cz.upce.fei.sem_pr_backend.repository.RoleRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -192,32 +190,32 @@ public class ApplicationUserServiceImpl implements ApplicationUserService, UserD
     }
 
     @Override
-    public Map<String, Object> getAllUsers(Integer pageNumber, Integer pageSize) {
-        Page<ApplicationUser> allUsers = userRepository.findAll(PageRequest.of(pageNumber, pageSize));
+    public ApplicationUserPageGetDto getAllUsers(Integer pageNumber, Integer pageSize, String direction, String... properties) {
+        Page<ApplicationUser> allUsers = userRepository.findAll(PageRequest.of(pageNumber, pageSize, Sort.Direction.valueOf(direction), properties));
         List<ApplicationUserGetDto> userGetDtos = allUsers
                 .stream().map(applicationUser -> modelMapper.map(applicationUser, ApplicationUserGetDto.class))
                 .collect(Collectors.toList());
 
-        Map<String, Object> pageObject = new HashMap<>();
-        pageObject.put("users", userGetDtos);
-        pageObject.put("currentPage", allUsers.getNumber());
-        pageObject.put("totalItems", allUsers.getTotalElements());
-        pageObject.put("totalPages", allUsers.getTotalPages());
+        ApplicationUserPageGetDto pageObject = new ApplicationUserPageGetDto();
+        pageObject.setUsers(userGetDtos);
+        pageObject.setCurrentPage(allUsers.getNumber());
+        pageObject.setTotalItems(allUsers.getTotalElements());
+        pageObject.setTotalPages(allUsers.getTotalPages());
 
         return pageObject;
     }
 
     @Override
-    public Map<String, Object> getActiveUsers(Integer pageNumber, Integer pageSize) {
-        Page<ApplicationUser> allUsers = userRepository.findAllByState(UserState.ACTIVE, PageRequest.of(pageNumber, pageSize));
+    public ApplicationUserPageGetDto getActiveUsers(Integer pageNumber, Integer pageSize, String direction, String... properties) {
+        Page<ApplicationUser> allUsers = userRepository.findAllByState(UserState.ACTIVE, PageRequest.of(pageNumber, pageSize, Sort.Direction.valueOf(direction), properties));
         List<ApplicationUserGetDto> userGetDtos = allUsers
                 .stream().map(applicationUser -> modelMapper.map(applicationUser, ApplicationUserGetDto.class))
                 .collect(Collectors.toList());
-        Map<String, Object> pageObject = new HashMap<>();
-        pageObject.put("users", userGetDtos);
-        pageObject.put("currentPage", allUsers.getNumber());
-        pageObject.put("totalItems", allUsers.getTotalElements());
-        pageObject.put("totalPages", allUsers.getTotalPages());
+        ApplicationUserPageGetDto pageObject = new ApplicationUserPageGetDto();
+        pageObject.setUsers(userGetDtos);
+        pageObject.setCurrentPage(allUsers.getNumber());
+        pageObject.setTotalItems(allUsers.getTotalElements());
+        pageObject.setTotalPages(allUsers.getTotalPages());
 
         return pageObject;
     }

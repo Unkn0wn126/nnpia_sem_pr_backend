@@ -3,6 +3,7 @@ package cz.upce.fei.sem_pr_backend.controller.v1;
 import cz.upce.fei.sem_pr_backend.domain.Comment;
 import cz.upce.fei.sem_pr_backend.dto.comment.CommentCreateDto;
 import cz.upce.fei.sem_pr_backend.dto.comment.CommentGetDto;
+import cz.upce.fei.sem_pr_backend.dto.comment.CommentPageGetDto;
 import cz.upce.fei.sem_pr_backend.dto.comment.CommentUpdateDto;
 import cz.upce.fei.sem_pr_backend.service.IssueService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
@@ -25,8 +27,12 @@ public class CommentController {
     }
 
     @GetMapping("/")
-    public Map<String, Object> getComments(Principal principal, @RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize){
-        return issueService.getAllComments(principal, pageNumber, pageSize);
+    public CommentPageGetDto getComments(Principal principal,
+                                         @RequestParam(defaultValue = "0") Integer pageNumber,
+                                         @RequestParam(defaultValue = "5") Integer pageSize,
+                                         @Valid @Pattern(regexp = "ASC|DESC") @RequestParam(defaultValue = "ASC") String direction,
+                                         @RequestParam(defaultValue = "published") String... orderBy){
+        return issueService.getAllComments(principal, pageNumber, pageSize, direction, orderBy);
     }
 
     @GetMapping("/{id}")
@@ -35,13 +41,23 @@ public class CommentController {
     }
 
     @GetMapping("/issue/{id}")
-    public Map<String, Object> getCommentsByIssueId(Principal principal, @RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize, @PathVariable Long id){
-        return issueService.getIssueComments(principal, id, pageNumber, pageSize);
+    public CommentPageGetDto getCommentsByIssueId(Principal principal,
+                                                    @PathVariable Long id,
+                                                    @RequestParam(defaultValue = "0") Integer pageNumber,
+                                                    @RequestParam(defaultValue = "5") Integer pageSize,
+                                                    @Valid @Pattern(regexp = "ASC|DESC") @RequestParam(defaultValue = "ASC") String direction,
+                                                    @RequestParam(defaultValue = "published") String... orderBy){
+        return issueService.getIssueComments(principal, id, pageNumber, pageSize, direction, orderBy);
     }
 
     @GetMapping("/user/{username}")
-    public Map<String, Object> getCommentsByAuthorUsername(Principal principal, @RequestParam(defaultValue = "0") Integer pageNumber, @RequestParam(defaultValue = "5") Integer pageSize, @PathVariable String username){
-        return issueService.getCommentsByAuthor(principal, username, pageNumber, pageSize);
+    public CommentPageGetDto getCommentsByAuthorUsername(Principal principal,
+                                                           @PathVariable String username,
+                                                           @RequestParam(defaultValue = "0") Integer pageNumber,
+                                                           @RequestParam(defaultValue = "5") Integer pageSize,
+                                                           @Valid @Pattern(regexp = "ASC|DESC") @RequestParam(defaultValue = "ASC") String direction,
+                                                           @RequestParam(defaultValue = "published") String... orderBy){
+        return issueService.getCommentsByAuthor(principal, username, pageNumber, pageSize, direction, orderBy);
     }
 
     @DeleteMapping("/delete/{id}")

@@ -103,7 +103,7 @@ public class IssueControllerTest {
 
     @Test
     void getAllIssues_whenNotAuthenticated_receiveOk() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.get(API_1_0_ISSUES + "/")
+        mockMvc.perform(MockMvcRequestBuilders.get(API_1_0_ISSUES + "/?pageNumber=0&pageSize=5&direction=DESC&orderBy=published")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.issues", hasSize(2)));

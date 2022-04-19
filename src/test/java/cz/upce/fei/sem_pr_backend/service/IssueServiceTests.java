@@ -9,6 +9,7 @@ import cz.upce.fei.sem_pr_backend.domain.enum_type.UserState;
 import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserCreateDto;
 import cz.upce.fei.sem_pr_backend.dto.applicationuser.ApplicationUserGetDto;
 import cz.upce.fei.sem_pr_backend.dto.issue.IssueCreateDto;
+import cz.upce.fei.sem_pr_backend.dto.issue.IssuePageGetDto;
 import cz.upce.fei.sem_pr_backend.dto.profile.ProfileCreateDto;
 import cz.upce.fei.sem_pr_backend.dto.profile.ProfileGetDto;
 import cz.upce.fei.sem_pr_backend.repository.*;
@@ -19,12 +20,19 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 
 import java.security.Principal;
+import java.sql.Array;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -106,6 +114,59 @@ class IssueServiceTests {
 
         Issue created = issueService.createIssue(principal, issueCreateDto);
         assertThat(created.getAuthor().getUsername()).isSameAs(issue.getAuthor().getUsername());
+    }
+
+    @Test
+    void getAllPublicIssues_whenNotAuthenticated_Success() {
+        ApplicationUser user = new ApplicationUser();
+        user.setEmail("email@example.com");
+        user.setPassword("P4ssw0rd$");
+        user.setUsername("user");
+        user.setState(UserState.ACTIVE);
+
+        IssueCreateDto issueCreateDto = new IssueCreateDto();
+        issueCreateDto.setHeader("Header");
+        issueCreateDto.setContent("Content");
+        issueCreateDto.setSeverity(IssueSeverity.LOW.name());
+        issueCreateDto.setVisibility(IssueVisibility.PUBLIC.name());
+
+        Issue publicIssue = new Issue();
+        publicIssue.setCompletionState(IssueCompletionState.TODO);
+        publicIssue.setAuthor(user);
+        publicIssue.setVisibility(IssueVisibility.PUBLIC);
+        publicIssue.setSeverity(IssueSeverity.LOW);
+        publicIssue.setContent("Content");
+        publicIssue.setHeader("Header");
+        publicIssue.setPublished(Timestamp.from(Instant.now()));
+        publicIssue.setLastEdited(Timestamp.from(Instant.now()));
+
+        Issue secondPublicIssue = new Issue();
+        secondPublicIssue.setCompletionState(IssueCompletionState.TODO);
+        secondPublicIssue.setAuthor(user);
+        secondPublicIssue.setVisibility(IssueVisibility.PUBLIC);
+        secondPublicIssue.setSeverity(IssueSeverity.LOW);
+        secondPublicIssue.setContent("Content");
+        secondPublicIssue.setHeader("Header");
+        secondPublicIssue.setPublished(Timestamp.from(Instant.now()));
+        secondPublicIssue.setLastEdited(Timestamp.from(Instant.now()));
+
+        Issue internalIssue = new Issue();
+        internalIssue.setCompletionState(IssueCompletionState.TODO);
+        internalIssue.setAuthor(user);
+        internalIssue.setVisibility(IssueVisibility.INTERNAL);
+        internalIssue.setSeverity(IssueSeverity.LOW);
+        internalIssue.setContent("Content");
+        internalIssue.setHeader("Header");
+        internalIssue.setPublished(Timestamp.from(Instant.now()));
+        internalIssue.setLastEdited(Timestamp.from(Instant.now()));
+
+        when(issueRepository.findAllByVisibility(Arrays.asList(IssueVisibility.PUBLIC), null, PageRequest.of(0, 5, Sort.Direction.ASC, "id"))).thenReturn(new PageImpl<>(Arrays.asList(publicIssue, secondPublicIssue)));
+
+        IssuePageGetDto result = issueService.getAllIssues(null, 0, 5, "ASC", "id");
+        assertThat(result.getTotalItems()).isEqualTo(2L);
+        assertThat(result.getTotalPages()).isEqualTo(1);
+        assertThat(result.getCurrentPage()).isEqualTo(0);
+        assertThat(result.getIssues().size()).isEqualTo(2);
     }
 
 }
