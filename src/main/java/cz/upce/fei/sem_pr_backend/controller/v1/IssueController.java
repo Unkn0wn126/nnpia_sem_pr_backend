@@ -28,7 +28,7 @@ public class IssueController {
     public IssuePageGetDto getAllIssues(Principal principal,
                                         @RequestParam(defaultValue = "0") Integer pageNumber,
                                         @RequestParam(defaultValue = "5") Integer pageSize,
-                                        @Valid @Pattern(regexp = "ASC|DESC") @RequestParam(defaultValue = "ASC") String direction,
+                                        @Valid @Pattern(regexp = "ASC|DESC") @RequestParam(defaultValue = "DESC") String direction,
                                         @RequestParam(defaultValue = "published") String... orderBy){
         return issueService.getAllIssues(principal, pageNumber, pageSize, direction, orderBy);
     }

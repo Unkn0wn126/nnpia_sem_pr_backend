@@ -31,7 +31,7 @@ public class CommentController {
                                          @RequestParam(defaultValue = "0") Integer pageNumber,
                                          @RequestParam(defaultValue = "5") Integer pageSize,
                                          @Valid @Pattern(regexp = "ASC|DESC") @RequestParam(defaultValue = "ASC") String direction,
-                                         @RequestParam(defaultValue = "published") String... orderBy){
+                                         @RequestParam(defaultValue = "created") String... orderBy){
         return issueService.getAllComments(principal, pageNumber, pageSize, direction, orderBy);
     }
 
@@ -46,7 +46,7 @@ public class CommentController {
                                                     @RequestParam(defaultValue = "0") Integer pageNumber,
                                                     @RequestParam(defaultValue = "5") Integer pageSize,
                                                     @Valid @Pattern(regexp = "ASC|DESC") @RequestParam(defaultValue = "ASC") String direction,
-                                                    @RequestParam(defaultValue = "published") String... orderBy){
+                                                    @RequestParam(defaultValue = "created") String... orderBy){
         return issueService.getIssueComments(principal, id, pageNumber, pageSize, direction, orderBy);
     }
 
@@ -55,8 +55,8 @@ public class CommentController {
                                                            @PathVariable String username,
                                                            @RequestParam(defaultValue = "0") Integer pageNumber,
                                                            @RequestParam(defaultValue = "5") Integer pageSize,
-                                                           @Valid @Pattern(regexp = "ASC|DESC") @RequestParam(defaultValue = "ASC") String direction,
-                                                           @RequestParam(defaultValue = "published") String... orderBy){
+                                                           @Valid @Pattern(regexp = "ASC|DESC") @RequestParam(defaultValue = "DESC") String direction,
+                                                           @RequestParam(defaultValue = "created") String... orderBy){
         return issueService.getCommentsByAuthor(principal, username, pageNumber, pageSize, direction, orderBy);
     }
 

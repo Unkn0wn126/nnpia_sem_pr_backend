@@ -26,8 +26,8 @@ public class UserController {
     @GetMapping("/")
     public ApplicationUserPageGetDto getUsers(@RequestParam(defaultValue = "0") Integer pageNumber,
                                               @RequestParam(defaultValue = "5") Integer pageSize,
-                                              @Valid @Pattern(regexp = "ASC|DESC") @RequestParam(defaultValue = "ASC") String direction,
-                                              @RequestParam(defaultValue = "published") String... orderBy){
+                                              @Valid @Pattern(regexp = "ASC|DESC") @RequestParam(defaultValue = "DESC") String direction,
+                                              @RequestParam(defaultValue = "created") String... orderBy){
         return userService.getAllUsers(pageNumber, pageSize, direction, orderBy);
     }
 
