@@ -32,22 +32,23 @@ To run this project, you will need to configure the following environment variab
 
 ## API Reference
 
-### /api/v1/comments/
+### Comments
 
-#### GET
-##### Summary
+```http
+GET /api/v1/comments/
+```
 
-getComments
+Get all comments
 
 ##### Parameters
 
-| Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| direction | query | direction | No | string |
-| name | query |  | No | string |
-| orderBy | query | orderBy | No | [ string ] |
-| pageNumber | query | pageNumber | No | integer |
-| pageSize | query | pageSize | No | integer |
+| Name          | Located in | Description | Required | Schema     |
+|---------------|------------|-------------| -------- |------------|
+| direction     | query      | direction   | No | string     |
+| orderBy       | query      | orderBy     | No | [ string ] |
+| pageNumber    | query      | pageNumber  | No | integer    |
+| pageSize      | query      | pageSize    | No | integer    |
+| Authorization | headers    | JWT token   | No | string     |
 
 ##### Responses
 
@@ -58,20 +59,19 @@ getComments
 | 403 | Forbidden |  |
 | 404 | Not Found |  |
 
-### /api/v1/comments/create/{id}
+```http
+POST /api/v1/comments/create/{id}
+```
 
-#### POST
-##### Summary
-
-postCommentToIssue
+Post comment to issue
 
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| commentCreateDto | body | commentCreateDto | Yes | [CommentCreateDto](#commentcreatedto) |
-| id | path | id | Yes | long |
-| name | query |  | No | string |
+| ---- | ---------- | ----------- |----------| ---- |
+| commentCreateDto | body | commentCreateDto | Yes      | [CommentCreateDto](#commentcreatedto) |
+| id | path | id | Yes      | long |
+| Authorization | headers    | JWT token   | Yes      | string     |
 
 ##### Responses
 
@@ -83,19 +83,18 @@ postCommentToIssue
 | 403 | Forbidden |
 | 404 | Not Found |
 
-### /api/v1/comments/delete/{id}
+```http
+DELETE /api/v1/comments/delete/{id}
+```
 
-#### DELETE
-##### Summary
-
-deleteCommentById
+Delete comment by id
 
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | id | path | id | Yes | long |
-| name | query |  | No | string |
+| Authorization | headers    | JWT token   | Yes      | string     |
 
 ##### Responses
 
@@ -106,23 +105,22 @@ deleteCommentById
 | 401 | Unauthorized |
 | 403 | Forbidden |
 
-### /api/v1/comments/issue/{id}
+```http
+GET /api/v1/comments/issue/{id}
+```
 
-#### GET
-##### Summary
-
-getCommentsByIssueId
+Get comments by issue id
 
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| direction | query | direction | No | string |
-| id | path | id | Yes | long |
-| name | query |  | No | string |
-| orderBy | query | orderBy | No | [ string ] |
-| pageNumber | query | pageNumber | No | integer |
-| pageSize | query | pageSize | No | integer |
+| ---- | ---------- | ----------- |----------| ---- |
+| direction | query | direction | No       | string |
+| id | path | id | Yes      | long |
+| orderBy | query | orderBy | No       | [ string ] |
+| pageNumber | query | pageNumber | No       | integer |
+| pageSize | query | pageSize | No       | integer |
+| Authorization | headers    | JWT token   | No       | string     |
 
 ##### Responses
 
@@ -133,12 +131,11 @@ getCommentsByIssueId
 | 403 | Forbidden |  |
 | 404 | Not Found |  |
 
-### /api/v1/comments/update/{id}
+```http
+PUT /api/v1/comments/update/{id}
+```
 
-#### PUT
-##### Summary
-
-updateCommentById
+Update comment by id
 
 ##### Parameters
 
@@ -146,7 +143,7 @@ updateCommentById
 | ---- | ---------- | ----------- | -------- | ---- |
 | commentUpdateDto | body | commentUpdateDto | Yes | [CommentUpdateDto](#commentupdatedto) |
 | id | path | id | Yes | long |
-| name | query |  | No | string |
+| Authorization | headers    | JWT token   | Yes      | string     |
 
 ##### Responses
 
@@ -158,23 +155,22 @@ updateCommentById
 | 403 | Forbidden |
 | 404 | Not Found |
 
-### /api/v1/comments/user/{username}
+```http
+GET /api/v1/comments/user/{username}
+```
 
-#### GET
-##### Summary
-
-getCommentsByAuthorUsername
+Get comments by author username
 
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | direction | query | direction | No | string |
-| name | query |  | No | string |
 | orderBy | query | orderBy | No | [ string ] |
 | pageNumber | query | pageNumber | No | integer |
 | pageSize | query | pageSize | No | integer |
 | username | path | username | Yes | string |
+| Authorization | headers    | JWT token   | No       | string     |
 
 ##### Responses
 
@@ -185,10 +181,9 @@ getCommentsByAuthorUsername
 | 403 | Forbidden |  |
 | 404 | Not Found |  |
 
-### /api/v1/comments/{id}
-
-#### GET
-##### Summary
+```http
+GET /api/v1/comments/{id}
+```
 
 getCommentById
 
@@ -197,7 +192,7 @@ getCommentById
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | id | path | id | Yes | long |
-| name | query |  | No | string |
+| Authorization | headers    | JWT token   | No       | string     |
 
 ##### Responses
 
@@ -208,22 +203,23 @@ getCommentById
 | 403 | Forbidden |  |
 | 404 | Not Found |  |
 
-### /api/v1/issues/
+### Issues
 
-#### GET
-##### Summary
+```http
+GET /api/v1/issues/
+```
 
-getAllIssues
+Get all issues
 
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | direction | query | direction | No | string |
-| name | query |  | No | string |
 | orderBy | query | orderBy | No | [ string ] |
 | pageNumber | query | pageNumber | No | integer |
 | pageSize | query | pageSize | No | integer |
+| Authorization | headers    | JWT token   | No       | string     |
 
 ##### Responses
 
@@ -234,19 +230,18 @@ getAllIssues
 | 403 | Forbidden |  |
 | 404 | Not Found |  |
 
-### /api/v1/issues/create
+```http
+POST /api/v1/issues/create
+```
 
-#### POST
-##### Summary
-
-postIssue
+Post issue
 
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| issueCreateDto | body | issueCreateDto | Yes | [IssueCreateDto](#issuecreatedto) |
-| name | query |  | No | string |
+| ---- | ---------- | ----------- |----------| ---- |
+| issueCreateDto | body | issueCreateDto | Yes      | [IssueCreateDto](#issuecreatedto) |
+| Authorization | headers    | JWT token   | Yes      | string     |
 
 ##### Responses
 
@@ -258,19 +253,21 @@ postIssue
 | 403 | Forbidden |
 | 404 | Not Found |
 
-### /api/v1/issues/delete/{id}
+```http
+DELETE /api/v1/issues/delete/{id}
+```
 
 #### DELETE
 ##### Summary
 
-deleteIssueById
+Delete issue by id
 
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | id | path | id | Yes | long |
-| name | query |  | No | string |
+| Authorization | headers    | JWT token   | Yes      | string     |
 
 ##### Responses
 
@@ -281,12 +278,11 @@ deleteIssueById
 | 401 | Unauthorized |
 | 403 | Forbidden |
 
-### /api/v1/issues/update/{id}
+```http
+PUT /api/v1/issues/update/{id}
+```
 
-#### PUT
-##### Summary
-
-updateIssueById
+Update issue by id
 
 ##### Parameters
 
@@ -294,7 +290,7 @@ updateIssueById
 | ---- | ---------- | ----------- | -------- | ---- |
 | id | path | id | Yes | long |
 | issueUpdateDto | body | issueUpdateDto | Yes | [IssueUpdateDto](#issueupdatedto) |
-| name | query |  | No | string |
+| Authorization | headers    | JWT token   | Yes      | string     |
 
 ##### Responses
 
@@ -306,23 +302,22 @@ updateIssueById
 | 403 | Forbidden |
 | 404 | Not Found |
 
-### /api/v1/issues/user/{username}
+```http
+GET /api/v1/issues/user/{username}
+```
 
-#### GET
-##### Summary
-
-getIssuesByAuthorUsername
+Get issues by author username
 
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| direction | query | direction | No | string |
-| name | query |  | No | string |
-| orderBy | query | orderBy | No | [ string ] |
-| pageNumber | query | pageNumber | No | integer |
-| pageSize | query | pageSize | No | integer |
-| username | path | username | Yes | string |
+| ---- | ---------- | ----------- |----------| ---- |
+| direction | query | direction | No       | string |
+| orderBy | query | orderBy | No       | [ string ] |
+| pageNumber | query | pageNumber | No       | integer |
+| pageSize | query | pageSize | No       | integer |
+| username | path | username | Yes      | string |
+| Authorization | headers    | JWT token   | No       | string     |
 
 ##### Responses
 
@@ -333,19 +328,18 @@ getIssuesByAuthorUsername
 | 403 | Forbidden |  |
 | 404 | Not Found |  |
 
-### /api/v1/issues/{id}
+```http
+GET /api/v1/issues/{id}
+```
 
-#### GET
-##### Summary
-
-getIssueById
+Get issue by id
 
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | id | path | id | Yes | long |
-| name | query |  | No | string |
+| Authorization | headers    | JWT token   | No       | string     |
 
 ##### Responses
 
@@ -356,12 +350,13 @@ getIssueById
 | 403 | Forbidden |  |
 | 404 | Not Found |  |
 
-### /api/v1/login
+### Authentication
 
-#### POST
-##### Summary
+```http
+POST /api/v1/login
+```
 
-login
+Login
 
 ##### Parameters
 
@@ -379,12 +374,11 @@ login
 | 403 | Forbidden |  |
 | 404 | Not Found |  |
 
-### /api/v1/register
+```http
+POST /api/v1/register
+```
 
-#### POST
-##### Summary
-
-register
+Register
 
 ##### Parameters
 
@@ -402,12 +396,13 @@ register
 | 403 | Forbidden |
 | 404 | Not Found |
 
-### /api/v1/users/
+### Users
 
-#### GET
-##### Summary
+```http
+GET /api/v1/users/
+```
 
-getUsers
+Get users
 
 ##### Parameters
 
@@ -417,6 +412,7 @@ getUsers
 | orderBy | query | orderBy | No | [ string ] |
 | pageNumber | query | pageNumber | No | integer |
 | pageSize | query | pageSize | No | integer |
+| Authorization | headers    | JWT token   | No       | string     |
 
 ##### Responses
 
@@ -427,19 +423,18 @@ getUsers
 | 403 | Forbidden |  |
 | 404 | Not Found |  |
 
-### /api/v1/users/delete/{id}
+```http
+DELETE /api/v1/users/delete/{id}
+```
 
-#### DELETE
-##### Summary
-
-deleteUserById
+Delete user by id
 
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| id | path | id | Yes | long |
-| name | query |  | No | string |
+| ---- | ---------- | ----------- |----------| ---- |
+| id | path | id | Yes      | long |
+| Authorization | headers    | JWT token   | Yes      | string     |
 
 ##### Responses
 
@@ -450,18 +445,18 @@ deleteUserById
 | 401 | Unauthorized |
 | 403 | Forbidden |
 
-### /api/v1/users/id/{id}
+```http
+GET /api/v1/users/id/{id}
+```
 
-#### GET
-##### Summary
-
-getUserById
+Get user by id
 
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | id | path | id | Yes | long |
+| Authorization | headers    | JWT token   | No       | string     |
 
 ##### Responses
 
@@ -472,20 +467,19 @@ getUserById
 | 403 | Forbidden |  |
 | 404 | Not Found |  |
 
-### /api/v1/users/update/password/{id}
+```http
+PUT /api/v1/users/update/password/{id}
+```
 
-#### PUT
-##### Summary
-
-updateUserPasswordById
+Update user password by id
 
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | id | path | id | Yes | long |
-| name | query |  | No | string |
 | userUpdateDto | body | userUpdateDto | Yes | [ApplicationUserUpdatePasswordDto](#applicationuserupdatepassworddto) |
+| Authorization | headers    | JWT token   | Yes      | string     |
 
 ##### Responses
 
@@ -497,20 +491,19 @@ updateUserPasswordById
 | 403 | Forbidden |
 | 404 | Not Found |
 
-### /api/v1/users/update/{id}
+```http
+PUT /api/v1/users/update/{id}
+```
 
-#### PUT
-##### Summary
-
-updateUserById
+Update user by id
 
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
 | ---- | ---------- | ----------- | -------- | ---- |
 | id | path | id | Yes | long |
-| name | query |  | No | string |
 | userUpdateDto | body | userUpdateDto | Yes | [ApplicationUserUpdateDto](#applicationuserupdatedto) |
+| Authorization | headers    | JWT token   | Yes      | string     |
 
 ##### Responses
 
@@ -522,18 +515,18 @@ updateUserById
 | 403 | Forbidden |
 | 404 | Not Found |
 
-### /api/v1/users/{username}
+```http
+GET /api/v1/users/{username}
+```
 
-#### GET
-##### Summary
-
-getUserByUsername
+Get user by username
 
 ##### Parameters
 
 | Name | Located in | Description | Required | Schema |
-| ---- | ---------- | ----------- | -------- | ---- |
-| username | path | username | Yes | string |
+| ---- | ---------- | ----------- |----------| ---- |
+| username | path | username | Yes      | string |
+| Authorization | headers    | JWT token   | No       | string     |
 
 ##### Responses
 
