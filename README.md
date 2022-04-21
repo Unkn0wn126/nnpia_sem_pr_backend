@@ -29,16 +29,19 @@ To run this project, you will need to configure the following environment variab
 - Sorting of returned data
 - JWT authentication
 
+## Database model
+
+![DBModel](./doc_images/model.png)
 
 ## API Reference
 
 ### Comments
 
+#### Get all comments
+
 ```http
 GET /api/v1/comments/
 ```
-
-Get all comments
 
 ##### Parameters
 
@@ -59,11 +62,11 @@ Get all comments
 | 403 | Forbidden |  |
 | 404 | Not Found |  |
 
+#### Post comment to issue
+
 ```http
 POST /api/v1/comments/create/{id}
 ```
-
-Post comment to issue
 
 ##### Parameters
 
@@ -83,11 +86,12 @@ Post comment to issue
 | 403 | Forbidden |
 | 404 | Not Found |
 
+
+#### Delete comment by id
+
 ```http
 DELETE /api/v1/comments/delete/{id}
 ```
-
-Delete comment by id
 
 ##### Parameters
 
@@ -105,11 +109,11 @@ Delete comment by id
 | 401 | Unauthorized |
 | 403 | Forbidden |
 
+#### Get comments by issue id
+
 ```http
 GET /api/v1/comments/issue/{id}
 ```
-
-Get comments by issue id
 
 ##### Parameters
 
@@ -131,11 +135,11 @@ Get comments by issue id
 | 403 | Forbidden |  |
 | 404 | Not Found |  |
 
+#### Update comment by id
+
 ```http
 PUT /api/v1/comments/update/{id}
 ```
-
-Update comment by id
 
 ##### Parameters
 
@@ -155,11 +159,11 @@ Update comment by id
 | 403 | Forbidden |
 | 404 | Not Found |
 
+#### Get comments by author username
+
 ```http
 GET /api/v1/comments/user/{username}
 ```
-
-Get comments by author username
 
 ##### Parameters
 
@@ -181,11 +185,11 @@ Get comments by author username
 | 403 | Forbidden |  |
 | 404 | Not Found |  |
 
+#### Get comment by id
+
 ```http
 GET /api/v1/comments/{id}
 ```
-
-getCommentById
 
 ##### Parameters
 
@@ -205,11 +209,11 @@ getCommentById
 
 ### Issues
 
+#### Get all issues
+
 ```http
 GET /api/v1/issues/
 ```
-
-Get all issues
 
 ##### Parameters
 
@@ -230,11 +234,11 @@ Get all issues
 | 403 | Forbidden |  |
 | 404 | Not Found |  |
 
+#### Post issue
+
 ```http
 POST /api/v1/issues/create
 ```
-
-Post issue
 
 ##### Parameters
 
@@ -253,14 +257,11 @@ Post issue
 | 403 | Forbidden |
 | 404 | Not Found |
 
+#### Delete issue by id
+
 ```http
 DELETE /api/v1/issues/delete/{id}
 ```
-
-#### DELETE
-##### Summary
-
-Delete issue by id
 
 ##### Parameters
 
@@ -278,11 +279,11 @@ Delete issue by id
 | 401 | Unauthorized |
 | 403 | Forbidden |
 
+#### Update issue by id
+
 ```http
 PUT /api/v1/issues/update/{id}
 ```
-
-Update issue by id
 
 ##### Parameters
 
@@ -302,11 +303,11 @@ Update issue by id
 | 403 | Forbidden |
 | 404 | Not Found |
 
+#### Get issues by author username
+
 ```http
 GET /api/v1/issues/user/{username}
 ```
-
-Get issues by author username
 
 ##### Parameters
 
@@ -328,11 +329,11 @@ Get issues by author username
 | 403 | Forbidden |  |
 | 404 | Not Found |  |
 
+#### Get issue by id
+
 ```http
 GET /api/v1/issues/{id}
 ```
-
-Get issue by id
 
 ##### Parameters
 
@@ -352,11 +353,11 @@ Get issue by id
 
 ### Authentication
 
+#### Login
+
 ```http
 POST /api/v1/login
 ```
-
-Login
 
 ##### Parameters
 
@@ -374,11 +375,11 @@ Login
 | 403 | Forbidden |  |
 | 404 | Not Found |  |
 
+#### Register
+
 ```http
 POST /api/v1/register
 ```
-
-Register
 
 ##### Parameters
 
@@ -398,11 +399,11 @@ Register
 
 ### Users
 
+#### Get users
+
 ```http
 GET /api/v1/users/
 ```
-
-Get users
 
 ##### Parameters
 
@@ -423,11 +424,11 @@ Get users
 | 403 | Forbidden |  |
 | 404 | Not Found |  |
 
+#### Delete user by id
+
 ```http
 DELETE /api/v1/users/delete/{id}
 ```
-
-Delete user by id
 
 ##### Parameters
 
@@ -445,11 +446,11 @@ Delete user by id
 | 401 | Unauthorized |
 | 403 | Forbidden |
 
+#### Get user by id
+
 ```http
 GET /api/v1/users/id/{id}
 ```
-
-Get user by id
 
 ##### Parameters
 
@@ -467,11 +468,11 @@ Get user by id
 | 403 | Forbidden |  |
 | 404 | Not Found |  |
 
+#### Update user password by id
+
 ```http
 PUT /api/v1/users/update/password/{id}
 ```
-
-Update user password by id
 
 ##### Parameters
 
@@ -491,11 +492,11 @@ Update user password by id
 | 403 | Forbidden |
 | 404 | Not Found |
 
+#### Update user by id
+
 ```http
 PUT /api/v1/users/update/{id}
 ```
-
-Update user by id
 
 ##### Parameters
 
@@ -515,11 +516,11 @@ Update user by id
 | 403 | Forbidden |
 | 404 | Not Found |
 
+#### Get user by username
+
 ```http
 GET /api/v1/users/{username}
 ```
-
-Get user by username
 
 ##### Parameters
 
